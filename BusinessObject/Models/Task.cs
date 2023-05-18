@@ -12,8 +12,7 @@ namespace BusinessObject.Models
     public class Task
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -36,21 +35,21 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(Group))]
-        public long GroupId { get; set; }
+        public Guid GroupId { get; set; }
 
         [Required]
         [ForeignKey(nameof(CreatedBy))]
-        public long CreatedById { get; set; }
+        public Guid CreatedById { get; set; }
 
         [Required]
         [ForeignKey(nameof(MainTask))]
-        public long MainTaskId { get; set; }
+        public Guid? MainTaskId { get; set; }
 
         public Group Group { get; set; }
 
         public User CreatedBy { get; set; }
 
-        public Task MainTask { get; set; }
+        public Task? MainTask { get; set; }
 
         [InverseProperty(nameof(MainTask))]
         public List<Task> SubTasks { get; set;}

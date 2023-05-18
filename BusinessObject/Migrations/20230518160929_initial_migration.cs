@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BusinessObject.Migrations
 {
-    public partial class add_assigned_by_in_AssignedTask_migration : Migration
+    public partial class initial_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,10 +13,8 @@ namespace BusinessObject.Migrations
                 name: "Majors",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Test = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,8 +25,7 @@ namespace BusinessObject.Migrations
                 name: "Notifications",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -44,8 +41,7 @@ namespace BusinessObject.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -69,14 +65,13 @@ namespace BusinessObject.Migrations
                 name: "Feedbacks",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<float>(type: "real", nullable: false),
                     FeedbackedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    FeedbackedById = table.Column<long>(type: "bigint", nullable: false),
-                    FeedbackedForId = table.Column<long>(type: "bigint", nullable: false)
+                    FeedbackedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FeedbackedForId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,11 +94,10 @@ namespace BusinessObject.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,8 +114,8 @@ namespace BusinessObject.Migrations
                 name: "UserMajors",
                 columns: table => new
                 {
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    MajorId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MajorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -144,8 +138,8 @@ namespace BusinessObject.Migrations
                 name: "ApplicationMajors",
                 columns: table => new
                 {
-                    ApplicationId = table.Column<long>(type: "bigint", nullable: false),
-                    MajorId = table.Column<long>(type: "bigint", nullable: false)
+                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MajorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,14 +156,13 @@ namespace BusinessObject.Migrations
                 name: "Applications",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,9 +179,9 @@ namespace BusinessObject.Migrations
                 name: "AssignedTasks",
                 columns: table => new
                 {
-                    TaskId = table.Column<long>(type: "bigint", nullable: false),
-                    AssignedForId = table.Column<long>(type: "bigint", nullable: false),
-                    AssignedById = table.Column<long>(type: "bigint", nullable: false),
+                    TaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AssignedForId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AssignedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AssignedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -200,12 +193,11 @@ namespace BusinessObject.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    TaskId = table.Column<long>(type: "bigint", nullable: false)
+                    TaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,8 +208,8 @@ namespace BusinessObject.Migrations
                 name: "GroupMajors",
                 columns: table => new
                 {
-                    GroupId = table.Column<long>(type: "bigint", nullable: false),
-                    MajorId = table.Column<long>(type: "bigint", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MajorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MemberCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -235,8 +227,7 @@ namespace BusinessObject.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GroupSize = table.Column<int>(type: "int", nullable: false),
@@ -244,7 +235,7 @@ namespace BusinessObject.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CurrentMilestoneId = table.Column<long>(type: "bigint", nullable: false)
+                    CurrentMilestoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -255,10 +246,9 @@ namespace BusinessObject.Migrations
                 name: "Members",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LeftDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
@@ -284,12 +274,11 @@ namespace BusinessObject.Migrations
                 name: "Milestones",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false)
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -306,18 +295,17 @@ namespace BusinessObject.Migrations
                 name: "Tasks",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDateDeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateDeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedById = table.Column<long>(type: "bigint", nullable: false),
-                    MainTaskId = table.Column<long>(type: "bigint", nullable: false),
-                    MemberId = table.Column<long>(type: "bigint", nullable: true)
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MainTaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {

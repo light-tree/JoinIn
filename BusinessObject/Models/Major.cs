@@ -11,8 +11,7 @@ namespace BusinessObject.Models
     public class Major
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }

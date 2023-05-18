@@ -11,8 +11,7 @@ namespace BusinessObject.Models
     public class Transaction
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public int Status { get; set; }
@@ -22,7 +21,7 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(User))]
-        public long UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public User User { get; set; }
     }

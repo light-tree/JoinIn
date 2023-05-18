@@ -12,8 +12,7 @@ namespace BusinessObject.Models
     public class Group
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -38,9 +37,9 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(CurrentMilestone))]
-        public long CurrentMilestoneId { get; set; }
+        public Guid? CurrentMilestoneId { get; set; }
 
-        public Milestone CurrentMilestone { get; set; }
+        public Milestone? CurrentMilestone { get; set; }
 
         [InverseProperty(nameof(Milestone.Group))]
         public List<Milestone> Milestones { get; set; }

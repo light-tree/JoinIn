@@ -11,14 +11,13 @@ namespace BusinessObject.Models
     public class Member
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [ForeignKey(nameof(User))]
-        public long UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ForeignKey(nameof(Group))]
-        public long GroupId { get; set; }
+        public Guid GroupId { get; set; }
 
         [Required]
         public DateTime JoinedDate { get; set; }

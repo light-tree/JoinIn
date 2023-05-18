@@ -24,11 +24,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Application", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<DateTime>("ConfirmedDate")
                         .HasColumnType("datetime2");
@@ -40,14 +39,14 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -60,11 +59,11 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.ApplicationMajor", b =>
                 {
-                    b.Property<long>("ApplicationId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("ApplicationId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("MajorId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("MajorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ApplicationId", "MajorId");
 
@@ -75,14 +74,14 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.AssignedTask", b =>
                 {
-                    b.Property<long>("AssignedById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AssignedById")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("AssignedForId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AssignedForId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("TaskId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("AssignedDate")
                         .HasColumnType("datetime2");
@@ -98,11 +97,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Comment", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -114,8 +112,8 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<long>("TaskId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -126,24 +124,23 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Feedback", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("FeedbackedById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FeedbackedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("FeedbackedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FeedbackedForId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FeedbackedForId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<float>("Rating")
                         .HasColumnType("real");
@@ -162,17 +159,17 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Group", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("CurrentMilestoneId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("CurrentMilestoneId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -205,11 +202,11 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.GroupMajor", b =>
                 {
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("MajorId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("MajorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("MemberCount")
                         .HasColumnType("int");
@@ -223,19 +220,14 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Major", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("Test")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -244,14 +236,13 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Member", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("datetime2");
@@ -262,8 +253,8 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -276,18 +267,17 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Milestone", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -305,11 +295,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Notification", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -337,14 +326,13 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Task", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long>("CreatedById")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -356,14 +344,15 @@ namespace BusinessObject.Migrations
                     b.Property<DateTime>("FinishedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("MainTaskId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("MainTaskId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long?>("MemberId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("MemberId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -390,11 +379,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Transaction", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -403,8 +391,8 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -415,11 +403,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Avatar")
                         .IsRequired()
@@ -476,11 +463,11 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.UserMajor", b =>
                 {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("MajorId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("MajorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserId", "MajorId");
 

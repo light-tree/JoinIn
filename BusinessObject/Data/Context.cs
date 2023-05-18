@@ -43,6 +43,7 @@ namespace BusinessObject.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            /*Map Id for M-M table*/
             modelBuilder.Entity<ApplicationMajor>().HasKey(a => new { a.ApplicationId, a.MajorId });
             modelBuilder.Entity<GroupMajor>().HasKey(g => new { g.GroupId, g.MajorId });
             modelBuilder.Entity<AssignedTask>().HasKey(a => new { a.AssignedById, a.AssignedForId, a.TaskId });
@@ -89,18 +90,29 @@ namespace BusinessObject.Data
                 .HasOne(m => m.CurrentMilestone)
                 .WithOne(t => t.GroupForCurrent)
                 .OnDelete(DeleteBehavior.Restrict);
-            /*Use ON DELETE NO ACTION: no action should be taken on related entities during a delete operation. 
-             *However, this means you need to manually handle any dependencies and ensure data integrity.*/
-            //modelBuilder.Entity<Feedback>()
-            //    .HasOne(f => f.FeedbackedFor)
-            //    .WithMany(u => u.ReceivedFeedbacks)
-            //    .HasForeignKey(f => f.FeedbackedForId)
-            //    .OnDelete(DeleteBehavior.NoAction);
-            //modelBuilder.Entity<Feedback>()
-            //    .HasOne(f => f.FeedbackedBy)
-            //    .WithMany(u => u.SentFeedbacks)
-            //    .HasForeignKey(f => f.FeedbackedById)
-            //    .OnDelete(DeleteBehavior.NoAction);
+
+            /*Auto genarate Guid Id for tables*/
+            modelBuilder.Entity<Application>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Comment>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Feedback>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Group>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Major>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Member>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Milestone>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Notification>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Models.Task>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<Transaction>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
+
+            modelBuilder.Entity<User>().Property(a => a.Id).HasDefaultValueSql("NEWSEQUENTIALID()");
         }
     }
 }

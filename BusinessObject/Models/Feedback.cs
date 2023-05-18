@@ -11,8 +11,7 @@ namespace BusinessObject.Models
     public class Feedback
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Content { get; set; }
@@ -28,11 +27,11 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(FeedbackedBy))]
-        public long FeedbackedById { get; set; }
+        public Guid FeedbackedById { get; set; }
 
         [Required]
         [ForeignKey(nameof(FeedbackedFor))]
-        public long FeedbackedForId { get; set; }
+        public Guid FeedbackedForId { get; set; }
 
         public User FeedbackedBy { get; set; }
 

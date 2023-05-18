@@ -11,8 +11,7 @@ namespace BusinessObject.Models
     public class Milestone
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -25,7 +24,7 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(Group))]
-        public long GroupId { get; set; }
+        public Guid GroupId { get; set; }
 
         public Group Group { get; set; }
 

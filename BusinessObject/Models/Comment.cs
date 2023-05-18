@@ -11,8 +11,7 @@ namespace BusinessObject.Models
     public class Comment
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Content { get; set; }
@@ -25,7 +24,7 @@ namespace BusinessObject.Models
 
         [Required]
         [ForeignKey(nameof(Task))]
-        public long TaskId { get; set; }
+        public Guid TaskId { get; set; }
 
         public Task Task { get;}
     }

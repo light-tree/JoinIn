@@ -12,11 +12,11 @@ namespace BusinessObject.Models
     {
         [Key]
         [ForeignKey(nameof(Application))]
-        public long ApplicationId { get; set; }
+        public Guid ApplicationId { get; set; }
 
         [Key]
         [ForeignKey(nameof(Major))]
-        public long MajorId { get; set; }
+        public Guid MajorId { get; set; }
 
         public Application Application { get; set; }
 

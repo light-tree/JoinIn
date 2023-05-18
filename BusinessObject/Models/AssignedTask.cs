@@ -13,15 +13,15 @@ namespace BusinessObject.Models
     {
         [Key]
         [ForeignKey(nameof(Task))]
-        public long TaskId { get; set; }
+        public Guid TaskId { get; set; }
 
         [Key]
         [ForeignKey(nameof(AssignedFor))]
-        public long AssignedForId { get; set; }
+        public Guid AssignedForId { get; set; }
 
         [Key]
         [ForeignKey(nameof(AssignedBy))]
-        public long AssignedById { get; set; }
+        public Guid AssignedById { get; set; }
 
         [Required]
         public DateTime AssignedDate { get; set; }

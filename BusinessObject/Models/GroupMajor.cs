@@ -12,11 +12,11 @@ namespace BusinessObject.Models
     {
         [Key]
         [ForeignKey(nameof(Group))]
-        public long GroupId { get; set; }
+        public Guid GroupId { get; set; }
 
         [Key]
         [ForeignKey(nameof(Major))]
-        public long MajorId { get; set; }
+        public Guid MajorId { get; set; }
 
         [Required]
         public int MemberCount { get; set; }
