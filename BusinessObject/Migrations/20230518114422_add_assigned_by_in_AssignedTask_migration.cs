@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BusinessObject.Migrations
 {
-    public partial class initial_migration : Migration
+    public partial class add_assigned_by_in_AssignedTask_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,8 @@ namespace BusinessObject.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Test = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,12 +187,13 @@ namespace BusinessObject.Migrations
                 columns: table => new
                 {
                     TaskId = table.Column<long>(type: "bigint", nullable: false),
-                    MemberId = table.Column<long>(type: "bigint", nullable: false),
+                    AssignedForId = table.Column<long>(type: "bigint", nullable: false),
+                    AssignedById = table.Column<long>(type: "bigint", nullable: false),
                     AssignedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssignedTasks", x => new { x.MemberId, x.TaskId });
+                    table.PrimaryKey("PK_AssignedTasks", x => new { x.AssignedById, x.AssignedForId, x.TaskId });
                 });
 
             migrationBuilder.CreateTable(
@@ -361,6 +363,11 @@ namespace BusinessObject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AssignedTasks_AssignedForId",
+                table: "AssignedTasks",
+                column: "AssignedForId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AssignedTasks_TaskId",
                 table: "AssignedTasks",
                 column: "TaskId");
@@ -453,12 +460,20 @@ namespace BusinessObject.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AssignedTasks_Members_MemberId",
+                name: "FK_AssignedTasks_Members_AssignedById",
                 table: "AssignedTasks",
-                column: "MemberId",
+                column: "AssignedById",
                 principalTable: "Members",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AssignedTasks_Members_AssignedForId",
+                table: "AssignedTasks",
+                column: "AssignedForId",
+                principalTable: "Members",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AssignedTasks_Tasks_TaskId",

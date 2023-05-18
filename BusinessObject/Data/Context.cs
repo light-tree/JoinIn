@@ -45,7 +45,7 @@ namespace BusinessObject.Data
         {
             modelBuilder.Entity<ApplicationMajor>().HasKey(a => new { a.ApplicationId, a.MajorId });
             modelBuilder.Entity<GroupMajor>().HasKey(g => new { g.GroupId, g.MajorId });
-            modelBuilder.Entity<AssignedTask>().HasKey(a => new { a.MemberId, a.TaskId });
+            modelBuilder.Entity<AssignedTask>().HasKey(a => new { a.AssignedById, a.AssignedForId, a.TaskId });
             modelBuilder.Entity<UserMajor>().HasKey(u => new { u.UserId, u.MajorId });
 
             /*Disable cascade delete: ensures that deleting a User will not cascade-delete related Feedbacks.*/
@@ -71,6 +71,18 @@ namespace BusinessObject.Data
                 .HasOne(m => m.Task)
                 .WithMany(t => t.AssignedTasks)
                 .HasForeignKey(t => t.TaskId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AssignedTask>()
+                .HasOne(f => f.AssignedFor)
+                .WithMany(u => u.AssignedTasksFor)
+                .HasForeignKey(f => f.AssignedForId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AssignedTask>()
+                .HasOne(f => f.AssignedBy)
+                .WithMany(u => u.AssignedTasksBy)
+                .HasForeignKey(f => f.AssignedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Group>()

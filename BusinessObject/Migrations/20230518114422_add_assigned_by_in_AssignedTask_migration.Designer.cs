@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230517175032_initial_migration")]
-    partial class initial_migration
+    [Migration("20230518114422_add_assigned_by_in_AssignedTask_migration")]
+    partial class add_assigned_by_in_AssignedTask_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -77,7 +77,10 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.AssignedTask", b =>
                 {
-                    b.Property<long>("MemberId")
+                    b.Property<long>("AssignedById")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("AssignedForId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TaskId")
@@ -86,7 +89,9 @@ namespace BusinessObject.Migrations
                     b.Property<DateTime>("AssignedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("MemberId", "TaskId");
+                    b.HasKey("AssignedById", "AssignedForId", "TaskId");
+
+                    b.HasIndex("AssignedForId");
 
                     b.HasIndex("TaskId");
 
@@ -229,6 +234,10 @@ namespace BusinessObject.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Test")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -522,10 +531,16 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.AssignedTask", b =>
                 {
-                    b.HasOne("BusinessObject.Models.Member", "Member")
-                        .WithMany("AssignedTasks")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("BusinessObject.Models.Member", "AssignedBy")
+                        .WithMany("AssignedTasksBy")
+                        .HasForeignKey("AssignedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BusinessObject.Models.Member", "AssignedFor")
+                        .WithMany("AssignedTasksFor")
+                        .HasForeignKey("AssignedForId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("BusinessObject.Models.Task", "Task")
@@ -534,7 +549,9 @@ namespace BusinessObject.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Member");
+                    b.Navigation("AssignedBy");
+
+                    b.Navigation("AssignedFor");
 
                     b.Navigation("Task");
                 });
@@ -717,7 +734,9 @@ namespace BusinessObject.Migrations
 
             modelBuilder.Entity("BusinessObject.Models.Member", b =>
                 {
-                    b.Navigation("AssignedTasks");
+                    b.Navigation("AssignedTasksBy");
+
+                    b.Navigation("AssignedTasksFor");
 
                     b.Navigation("Tasks");
                 });

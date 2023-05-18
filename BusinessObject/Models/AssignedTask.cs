@@ -16,14 +16,20 @@ namespace BusinessObject.Models
         public long TaskId { get; set; }
 
         [Key]
-        [ForeignKey(nameof(Member))]
-        public long MemberId { get; set; }
+        [ForeignKey(nameof(AssignedFor))]
+        public long AssignedForId { get; set; }
+
+        [Key]
+        [ForeignKey(nameof(AssignedBy))]
+        public long AssignedById { get; set; }
 
         [Required]
         public DateTime AssignedDate { get; set; }
 
         public Task Task { get; set; }
 
-        public Member Member { get; set; }
+        public Member AssignedFor { get; set; }
+
+        public Member AssignedBy { get; set; }
     }
 }

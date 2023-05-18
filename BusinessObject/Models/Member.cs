@@ -33,7 +33,11 @@ namespace BusinessObject.Models
 
         public Group Group { get; set; }
 
-        public List<AssignedTask > AssignedTasks { get; set; }
+        [InverseProperty(nameof(AssignedTask.AssignedFor))]
+        public List<AssignedTask> AssignedTasksFor { get; set; }
+
+        [InverseProperty(nameof(AssignedTask.AssignedBy))]
+        public List<AssignedTask> AssignedTasksBy { get; set; }
 
         public List<Task> Tasks { get; set; }
     }
