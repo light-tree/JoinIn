@@ -6,6 +6,7 @@ using DataAccess.Services;
 using DataAccess.Services.Implements;
 
 var builder = WebApplication.CreateBuilder(args);
+var prefix = "/api/v1";
 
 // Add services to the container.
 
@@ -50,6 +51,17 @@ builder.Services.AddScoped<IUserMajorService, UserMajorService>();
 
 var app = builder.Build();
 
+// Configure the routing
+app.Map(prefix, app =>
+{
+    app.UseRouting();
+    app.UseAuthorization();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    });
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -58,8 +70,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
