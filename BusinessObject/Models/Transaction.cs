@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -14,10 +15,13 @@ namespace BusinessObject.Models
         public Guid Id { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public DateTime TransactionDate { get; set; }
 
         [Required]
-        public string Type { get; set; }
+        public TransactionStatus Status { get; set; }
+
+        [Required]
+        public TransactionType Type { get; set; }
 
         [Required]
         [ForeignKey(nameof(User))]

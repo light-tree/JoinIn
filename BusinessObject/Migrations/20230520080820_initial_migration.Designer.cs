@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObject.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230518160929_initial_migration")]
+    [Migration("20230520080820_initial_migration")]
     partial class initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace BusinessObject.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<DateTime>("ConfirmedDate")
+                    b.Property<DateTime?>("ConfirmedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedDate")
@@ -166,11 +166,14 @@ namespace BusinessObject.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("CurrentMilestoneId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -187,6 +190,10 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SchoolName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Skill")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -194,10 +201,15 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrentMilestoneId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CurrentMilestoneId] IS NOT NULL");
 
                     b.ToTable("Groups");
                 });
@@ -211,6 +223,9 @@ namespace BusinessObject.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("MemberCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("GroupId", "MajorId");
@@ -249,7 +264,7 @@ namespace BusinessObject.Migrations
                     b.Property<DateTime>("JoinedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LeftDate")
+                    b.Property<DateTime?>("LeftDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Role")
@@ -285,7 +300,7 @@ namespace BusinessObject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("Order")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -307,7 +322,6 @@ namespace BusinessObject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -317,9 +331,8 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -343,14 +356,19 @@ namespace BusinessObject.Migrations
                     b.Property<DateTime>("EndDateDeadline")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FinishedDate")
+                    b.Property<int>("EstimatedDays")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FinishedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("ImpotantLevel")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("MainTaskId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("MemberId")
@@ -389,9 +407,11 @@ namespace BusinessObject.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -411,7 +431,6 @@ namespace BusinessObject.Migrations
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("BirthDay")
@@ -436,15 +455,12 @@ namespace BusinessObject.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OtherContact")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Skill")
@@ -455,7 +471,6 @@ namespace BusinessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Theme")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -576,8 +591,7 @@ namespace BusinessObject.Migrations
                     b.HasOne("BusinessObject.Models.Milestone", "CurrentMilestone")
                         .WithOne("GroupForCurrent")
                         .HasForeignKey("BusinessObject.Models.Group", "CurrentMilestoneId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CurrentMilestone");
                 });
@@ -648,8 +662,7 @@ namespace BusinessObject.Migrations
                     b.HasOne("BusinessObject.Models.Task", "MainTask")
                         .WithMany("SubTasks")
                         .HasForeignKey("MainTaskId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BusinessObject.Models.Member", null)
                         .WithMany("Tasks")

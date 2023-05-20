@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -17,14 +18,12 @@ namespace BusinessObject.Models
         [Required]
         public string FullName { get; set; }
 
-        [Required]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [Required]
         public string Email { get; set; }
 
-        [Required]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Required]
         public DateTime BirthDay { get; set; }
@@ -38,17 +37,14 @@ namespace BusinessObject.Models
         [Required]
         public string Skill { get; set; }
 
-        [Required]
-        public string OtherContact { get; set;}
+        public string? OtherContact { get; set;}
+
+        public string? Avatar { get; set; }
+
+        public string? Theme { get; set; }
 
         [Required]
-        public string Avatar { get; set; }
-
-        [Required]
-        public string Theme { get; set; }
-
-        [Required]
-        public int Status { get; set; }
+        public UserStatus Status { get; set; }
 
         [Required]
         public bool IsAdmin { get; set; }

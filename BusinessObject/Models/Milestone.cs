@@ -20,7 +20,7 @@ namespace BusinessObject.Models
         public string Description { get; set; }
 
         [Required]
-        public int Status { get; set;}
+        public int Order { get; set;}
 
         [Required]
         [ForeignKey(nameof(Group))]

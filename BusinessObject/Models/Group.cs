@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -27,15 +28,23 @@ namespace BusinessObject.Models
         public int MemberCount { get; set; }
 
         [Required]
+        public string SchoolName { get; set; }
+
+        [Required]
+        public string ClassName { get; set; }
+
+        [Required]
+        public string SubjectName { get; set; }
+
+        [Required]
         public string Description { get; set; }
 
         [Required]
         public string Skill { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public GroupStatus Status { get; set; }
 
-        [Required]
         [ForeignKey(nameof(CurrentMilestone))]
         public Guid? CurrentMilestoneId { get; set; }
 

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -23,7 +24,7 @@ namespace BusinessObject.Models
         public DateTime FeedbackedDate { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public FeedbackStatus Status { get; set; }
 
         [Required]
         [ForeignKey(nameof(FeedbackedBy))]

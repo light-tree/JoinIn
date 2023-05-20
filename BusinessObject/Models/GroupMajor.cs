@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObject.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,6 +21,9 @@ namespace BusinessObject.Models
 
         [Required]
         public int MemberCount { get; set; }
+
+        [Required]
+        public GroupMajorStatus Status { get; set; }
 
         public Group Group { get; set; }
 

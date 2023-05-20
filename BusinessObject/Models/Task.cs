@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -23,15 +24,19 @@ namespace BusinessObject.Models
         [Required]
         public DateTime EndDateDeadline { get; set; }
 
-        [Required]
-        public DateTime FinishedDate { get; set; }
+        public DateTime? FinishedDate { get; set; }
 
+        [Required]
+        public int ImpotantLevel { get; set; }
+
+        [Required]
+        public int EstimatedDays { get; set; }
 
         [Required]
         public string Description { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public Enums.TaskStatus Status { get; set; }
 
         [Required]
         [ForeignKey(nameof(Group))]
@@ -41,7 +46,6 @@ namespace BusinessObject.Models
         [ForeignKey(nameof(CreatedBy))]
         public Guid CreatedById { get; set; }
 
-        [Required]
         [ForeignKey(nameof(MainTask))]
         public Guid? MainTaskId { get; set; }
 

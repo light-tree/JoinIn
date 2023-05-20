@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -20,7 +21,7 @@ namespace BusinessObject.Models
         public DateTime CreatedDate { get; set; }
 
         [Required]
-        public int Status { get; set; }
+        public CommentStatus Status { get; set; }
 
         [Required]
         [ForeignKey(nameof(Task))]

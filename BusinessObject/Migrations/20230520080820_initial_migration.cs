@@ -28,9 +28,9 @@ namespace BusinessObject.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -43,16 +43,16 @@ namespace BusinessObject.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OtherContact = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OtherContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -95,8 +95,9 @@ namespace BusinessObject.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -159,7 +160,7 @@ namespace BusinessObject.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ConfirmedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -210,7 +211,8 @@ namespace BusinessObject.Migrations
                 {
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MajorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MemberCount = table.Column<int>(type: "int", nullable: false)
+                    MemberCount = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,10 +234,13 @@ namespace BusinessObject.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GroupSize = table.Column<int>(type: "int", nullable: false),
                     MemberCount = table.Column<int>(type: "int", nullable: false),
+                    SchoolName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CurrentMilestoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CurrentMilestoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -250,7 +255,7 @@ namespace BusinessObject.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LeftDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LeftDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -277,7 +282,7 @@ namespace BusinessObject.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWSEQUENTIALID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -299,12 +304,14 @@ namespace BusinessObject.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartDateDeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDateDeadline = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FinishedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FinishedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ImpotantLevel = table.Column<int>(type: "int", nullable: false),
+                    EstimatedDays = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MainTaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MainTaskId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -384,7 +391,8 @@ namespace BusinessObject.Migrations
                 name: "IX_Groups_CurrentMilestoneId",
                 table: "Groups",
                 column: "CurrentMilestoneId",
-                unique: true);
+                unique: true,
+                filter: "[CurrentMilestoneId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Members_GroupId",

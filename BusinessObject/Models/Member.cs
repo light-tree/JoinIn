@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject.Enums;
 
 namespace BusinessObject.Models
 {
@@ -22,11 +23,10 @@ namespace BusinessObject.Models
         [Required]
         public DateTime JoinedDate { get; set; }
 
-        [Required]
-        public DateTime LeftDate { get; set; }
+        public DateTime? LeftDate { get; set; }
 
         [Required]
-        public int Role { get; set; }
+        public MemberRole Role { get; set; }
 
         public User User { get; set; }
 
