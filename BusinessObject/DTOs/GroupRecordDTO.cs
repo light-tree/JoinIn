@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repositories
+namespace BusinessObject.DTOs
 {
-    public interface ICommentRepository
+    public class GroupRecordDTO
     {
-        int DeleteByTaskId(Guid taskId);
+
     }
 }

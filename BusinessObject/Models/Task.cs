@@ -27,7 +27,7 @@ namespace BusinessObject.Models
         public DateTime? FinishedDate { get; set; }
 
         [Required]
-        public int ImpotantLevel { get; set; }
+        public ImportantLevel ImpotantLevel { get; set; }
 
         [Required]
         public int EstimatedDays { get; set; }

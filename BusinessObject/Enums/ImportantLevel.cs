@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccess.Repositories
+namespace BusinessObject.Enums
 {
-    public interface ICommentRepository
+    public enum ImportantLevel
     {
-        int DeleteByTaskId(Guid taskId);
+        OPTIONAL, LOW, MEDIUM, HIGH, VERY_HIGH
     }
 }

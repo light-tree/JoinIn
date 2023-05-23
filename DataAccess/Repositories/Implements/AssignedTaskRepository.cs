@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObject.Data;
+using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,49 @@ namespace DataAccess.Repositories.Implements
 {
     public class AssignedTaskRepository : IAssignedTaskRepository
     {
+        private readonly Context _context;
+
+        public AssignedTaskRepository(Context context)
+        {
+            _context = context;
+        }
+
+        public List<AssignedTask> CreateAssignedTasks(List<Guid> assignedForIds, Guid newTaskId, Guid createdById)
+        {
+            DateTime dateTime = DateTime.Now;
+            List<AssignedTask> assignedTasks = new List<AssignedTask>();
+            foreach (var assignedForId in assignedForIds)
+            {
+                assignedTasks.Add(new()
+                {
+                    TaskId = newTaskId,
+                    AssignedById = createdById,
+                    AssignedForId = assignedForId,
+                    AssignedDate = dateTime,
+                });
+            }
+            _context.AssignedTasks.AddRange(assignedTasks);
+            _context.SaveChanges();
+            return assignedTasks;
+        }
+
+        public int DeleteByAssignedForId(Guid lostAssignedForId)
+        {
+            AssignedTask lostAssignedTask = _context.AssignedTasks.FirstOrDefault(a => a.AssignedForId == lostAssignedForId);
+            _context.AssignedTasks.Remove(lostAssignedTask);
+            return _context.SaveChanges();
+        }
+
+        public int DeleteByTaskId(Guid taskId)
+        {
+            AssignedTask deletedAssignedTask = _context.AssignedTasks.FirstOrDefault(a => a.TaskId == taskId);
+            _context.AssignedTasks.Remove(deletedAssignedTask);
+            return _context.SaveChanges();
+        }
+
+        public List<AssignedTask> FindByTaskId(Guid id)
+        {
+            return _context.AssignedTasks.Where(a => a.AssignedForId == id).ToList();
+        }
     }
 }
