@@ -43,6 +43,9 @@ namespace BusinessObject.Models
         public string Skill { get; set; }
 
         [Required]
+        public string Avatar { get; set; }
+
+        [Required]
         public GroupStatus Status { get; set; }
 
         [ForeignKey(nameof(CurrentMilestone))]
