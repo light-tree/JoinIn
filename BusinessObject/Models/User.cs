@@ -37,6 +37,8 @@ namespace BusinessObject.Models
         [Required]
         public string Skill { get; set; }
 
+        public string? Token { get; set; }
+
         public string? OtherContact { get; set;}
 
         public string? Avatar { get; set; }
