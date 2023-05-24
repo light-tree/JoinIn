@@ -2,6 +2,7 @@
 {
     public interface IEmailService
     {
-        public  Task SendConfirmationEmail(string toEmail);
+        public  Task SendConfirmationEmail(string toEmail, string emailVerificationLink);
+        public Task SendRecoveryPasswordEmail(string toEmail, string passwordRecoveryLink);
     }
 }

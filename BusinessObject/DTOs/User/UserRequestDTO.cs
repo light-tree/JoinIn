@@ -10,19 +10,20 @@ namespace BusinessObject.DTOs.User
 {
     public class UserRequestDTO
     {
+        [Required]
+        Guid id;
+
         [Required(ErrorMessage = "Full name is required.")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Full name must be between {2} and {1} characters long.")]
         public string FullName { get; set; }
 
-        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Password must be at least 8 characters long with at least one letter and one number.")]
-        public string Password { get; set; }
+        //[RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "Password must be at least 8 characters long with at least one letter and one number.")]
+        //public string Password { get; set; }
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
-        public string Email { get; set; }
+        //[Required(ErrorMessage = "Email is required.")]
+        //[EmailAddress(ErrorMessage = "Invalid email format.")]
+        //public string Email { get; set; }
 
-        [Phone(ErrorMessage = "Invalid phone format.")]
-        public string Phone { get; set; }
 
         [Required(ErrorMessage = "Birthdate is required.")]
         [DataType(DataType.Date)]

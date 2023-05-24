@@ -10,5 +10,7 @@ namespace DataAccess.Repositories
     public interface IMajorRepository
     {
         public Task<Major> findByID(string id);
+
+       
     }
 }

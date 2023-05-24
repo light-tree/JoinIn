@@ -21,7 +21,7 @@ namespace DataAccess.Repositories.Implements
             Major major = null;
             try
             {
-
+                
                 major = await _context.Majors.FindAsync(id);
                 return major;
             }

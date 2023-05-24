@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Data;
 using BusinessObject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,27 @@ namespace DataAccess.Repositories.Implements
         public Task<bool> assignMajorToUser(List<UserMajor> userMajors)
         {
             return null;
+        }
+
+        public async Task<bool> UpdateUserMajor(Guid majorId, Guid userId)
+        {
+            try
+            {
+                var userMajor = await _context.UserMajors.FirstOrDefaultAsync(um => um.MajorId == majorId && um.UserId == userId);
+
+                if (userMajor == null)
+                {
+                    _context.UserMajors.Add(new UserMajor { MajorId = majorId, UserId = userId });
+                    _context.SaveChanges();
+                    return true;
+                }
+                return false;
+               
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

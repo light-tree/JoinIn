@@ -10,5 +10,7 @@ namespace DataAccess.Repositories
     public interface IUserMajorRepository
     {
         public Task<bool> assignMajorToUser(List<UserMajor> userMajors);
+
+        public Task<bool> UpdateUserMajor(Guid majorId, Guid userId);
     }
 }

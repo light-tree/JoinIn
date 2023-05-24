@@ -8,5 +8,6 @@ namespace DataAccess.Services
 {
     public interface IUserMajorService
     {
+        public  Task<bool> UpdateUserMajor(Guid majorId, Guid userId);
     }
 }

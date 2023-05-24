@@ -17,7 +17,8 @@ namespace DataAccess.Services.Implements
         }
         public async Task<Major> findMajorById(string id)
         {
-            var rs = await majorRepository.findByID(id); ;
+           
+            var rs = await majorRepository.findByID(id); 
             return rs;
 
         }

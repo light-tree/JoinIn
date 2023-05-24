@@ -3,6 +3,7 @@ using BusinessObject.DTOs.User;
 using DataAccess.Security;
 using DataAccess.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace API_JoinIn.Controllers
 {
@@ -23,22 +24,28 @@ namespace API_JoinIn.Controllers
 
         [HttpPost]
         [Route("/authenticate")]
-        public IActionResult Authenticate(LoginDTO loginDTO)
+        public async Task<IActionResult> Authenticate(LoginDTO loginDTO)
         {
             CommonResponse commonResponse = new CommonResponse();
             try
             {
 
-                var token = authenticateService.authenticate(loginDTO);
-                if (token == null)
+                var res =  await authenticateService.Authenticate(loginDTO);
+                if (res == null)
                 {
-                    commonResponse.Message = "Tài khoản hoặc mật khẩu không chính xác";
+                    commonResponse.Message = "Incorrect email or password";
                     return Unauthorized(commonResponse);
 
-                }
+                } else if(res == "unverify")
+                {
+                    commonResponse.Message = "Please verify your email";
+                    return Unauthorized(commonResponse);
+                } 
                 else
                 {
-                    return Ok(token);
+                    commonResponse.Status = 200;
+                    commonResponse.Data =  new TokenResponseDTO(res);
+                    return Ok(commonResponse);
 
                 }
             }

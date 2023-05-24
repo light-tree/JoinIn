@@ -2,6 +2,7 @@
 using BusinessObject.DTOs.Common;
 using BusinessObject.DTOs.Google;
 using BusinessObject.DTOs.User;
+using BusinessObject.Enums;
 using BusinessObject.Models;
 using DataAccess.Services;
 using FirebaseAdmin.Auth;
@@ -84,54 +85,58 @@ namespace API_JoinIn.Controllers
                 var userData = JsonSerializer.Deserialize<GoogleUserResponse>(userContent);
 
                 // check duplicated email
-                if (await userService.checkDuplicatedEmail(userData.Email)) { 
+                if (await userService.CheckDuplicatedEmail(userData.Email)) { 
 
                     // nếu user đã tồn tại, tạo token
-                    token =  authenticateService.authenticateByGoogleOauth2(userData.Email);
-                    commonResponse.Data = $"Token: {token}";
-                    commonResponse.Status = 200 ;
-                    return (Ok(commonResponse));
+                    var res = await  authenticateService.AuthenticateByGoogleOauth2(userData.Email);
+
+                    if (res == "Unverify")
+                    {
+                        commonResponse.Message = "Unvertify";
+                        commonResponse.Status = 401;
+                        return (Ok(commonResponse));
+                    }
+                    else
+                    {
+                        commonResponse.Data = commonResponse.Data = new TokenResponseDTO(res); ;
+                        commonResponse.Status = 200;
+                        return (Ok(commonResponse));
+                    }
                   }
 
                 else
                 {
                     // Sử dụng thông tin người dùng ở đây
-                    UserRequestDTO userRequestDTO = new UserRequestDTO();
-                    userRequestDTO.FullName = userData.Name;
-                    userRequestDTO.Email = userData.Email;
-                    userRequestDTO.Password = "";
-                    userRequestDTO.Gender = true;
-                    userRequestDTO.BirthDay = new DateTime(1975, 4, 30);
-                    userRequestDTO.Phone = "";
-                    userRequestDTO.Description = "";
-                    userRequestDTO.Skill = "";
-                    userRequestDTO.OtherContact = "";
-                    userRequestDTO.Avatar = userData.Picture;
-                    userRequestDTO.Theme = "";
-                    userRequestDTO.Status = BusinessObject.Enums.UserStatus.UNVERIFIED;
-                    userRequestDTO.MajorIdList = null;
 
-
-
-                    var json = JsonSerializer.Serialize(userRequestDTO);
-
-                    var inputUser = JsonSerializer.Deserialize<User>(json);
+                    User user = new User();
+                    user.Email = userData.Email;
+                    user.FullName = userData.Name;
+                    user.Password = "";
+                    user.BirthDay = new DateTime(1975, 4, 30);
+                    user.Gender = true;
+                    user.Description = "";
+                    user.OtherContact = "";
+                    user.Skill = "";
+                    user.Avatar = userData.Picture;
+                    user.Theme = "";
+                    user.Status = UserStatus.UNVERIFIED;
+                    user.IsAdmin = false;
 
                     using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                     {
 
-                        var user = userService.AddUser(inputUser);
+                        var userInput = userService.AddUser(user);
 
-                        if (user == null) throw new Exception();
+                        if (userInput == null) throw new Exception();
 
                         // đẩy user lên firebase
-                        var auth = FirebaseAuth.DefaultInstance;
-                        var userRecord = await auth.CreateUserAsync(new UserRecordArgs
-                        {
-                            Email = user.Email,
-                            Password = user.Password,
-                            EmailVerified = false
-                        });
+                        //var auth = FirebaseAuth.DefaultInstance;
+                        //var userRecord = await auth.CreateUserAsync(new UserRecordArgs
+                        //{
+                        //    Email = user.Email,
+                        //    Password = user.Password,
+                        //    EmailVerified = false
+                        //});
 
                         //if (user.Email != null)
                         //{
@@ -145,13 +150,15 @@ namespace API_JoinIn.Controllers
                         //string pictureUrl = userData.Picture;
                         //  string locale = userData.Locale;
                         //  string hd = userData.Hd;
-                        scope.Complete(); // commit transaction
+                      
 
                         //tạo token
                         // khi người dùng đăng nhập bằng token vừa tạo => đẩy người dùng về trang điền thông tin
-                        token = authenticateService.authenticateByGoogleOauth2(userData.Email);
-                        commonResponse.Data = $"Token: {token}";
+                        token = await authenticateService.AuthenticateByGoogleOauth2(userData.Email);
+                        commonResponse.Data = new TokenResponseDTO(token);
                         commonResponse.Status = 200;
+
+                        scope.Complete(); // commit transaction
                         return (Ok(commonResponse));
 
 
