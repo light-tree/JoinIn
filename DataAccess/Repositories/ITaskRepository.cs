@@ -15,6 +15,7 @@ namespace DataAccess.Repositories
         BusinessObject.Models.Task FindByName(string name);
         TaskRecordDTO FindRecordById(Guid newTaskId);
         BusinessObject.Models.Task FindById(Guid id);
+        BusinessObject.Models.Task FindByIdAndUserId(Guid id, Guid userId);
         int UpdateTask(TaskDTOForUpdating taskDTO, Guid userId);
         List<BusinessObject.Models.Task> FindByMainTaskId(Guid taskId);
         int DeleteByTaskId(Guid taskId);

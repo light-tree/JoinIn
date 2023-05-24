@@ -53,7 +53,7 @@ namespace BusinessObject.DTOs.User
         [EnumDataType(typeof(UserStatus))]
         public UserStatus Status { get; set; }
 
-        public List<string> MajorIdList { get; set; }
+        public List<Guid> MajorIdList { get; set; }
 
 
     }

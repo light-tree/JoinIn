@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObject.DTOs;
+using BusinessObject.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,8 @@ namespace DataAccess.Repositories
 {
     public interface IGroupRepository
     {
+        Group CreateGroup(GroupDTOForCreating groupDTOForCreating);
+        Group FindById(Guid groupId);
+        Group IncreaseCurrentMemberCount(Guid groupId, int v);
     }
 }

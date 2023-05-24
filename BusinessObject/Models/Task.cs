@@ -33,7 +33,7 @@ namespace BusinessObject.Models
         public int EstimatedDays { get; set; }
 
         [Required]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         public Enums.TaskStatus Status { get; set; }

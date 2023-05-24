@@ -31,7 +31,6 @@ namespace API_JoinIn.Controllers
             this.userService = userService;
             this.majorService = majorService;
             this.emailService = emailService;
-        
         }
 
 
@@ -60,9 +59,9 @@ namespace API_JoinIn.Controllers
                     var user = userService.AddUser(inputUser);
 
                     // check danh sách major
-                    foreach (string id in userRequestDTO.MajorIdList)
+                    foreach (Guid id in userRequestDTO.MajorIdList)
                     {
-                        var tmp = majorService.findMajorById(id);
+                        var tmp = majorService.FindMajorById(id);
                         if (tmp != null)
                         {
 
