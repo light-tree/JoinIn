@@ -1,4 +1,4 @@
-﻿using BusinessObject.Models;
+using BusinessObject.Models;
 using DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
@@ -15,10 +15,9 @@ namespace DataAccess.Services.Implements
         {
             this.majorRepository = majorRepository;
         }
-        public async Task<Major> findMajorById(string id)
+        public async Task<Major> FindMajorById(Guid id)
         {
-           
-            var rs = await majorRepository.findByID(id); 
+            var rs = await majorRepository.FindByID(id); ;
             return rs;
 
         }

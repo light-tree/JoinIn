@@ -24,21 +24,21 @@ namespace DataAccess.Repositories.Implements
 
         public BusinessObject.Models.Task CreateTask(TaskDTOForCreating task, Guid createdById)
         {
-            BusinessObject.Models.Task updatedTask = new BusinessObject.Models.Task();
-            updatedTask.Name = task.Name;
-            updatedTask.StartDateDeadline = task.StartDateDeadline;
-            updatedTask.EndDateDeadline = task.EndDateDeadline;
-            updatedTask.ImpotantLevel = task.ImpotantLevel;
-            updatedTask.EstimatedDays = task.EstimatedDays;
-            updatedTask.Description = task.Description;
-            updatedTask.Status = task.Status;
-            updatedTask.CreatedById = createdById;
-            updatedTask.GroupId = task.GroupId;
-            updatedTask.MainTaskId = task.MainTaskId;
+            BusinessObject.Models.Task created = new BusinessObject.Models.Task();
+            created.Name = task.Name;
+            created.StartDateDeadline = task.StartDateDeadline;
+            created.EndDateDeadline = task.EndDateDeadline;
+            created.ImpotantLevel = task.ImpotantLevel;
+            created.EstimatedDays = task.EstimatedDays;
+            created.Description = task.Description;
+            created.Status = BusinessObject.Enums.TaskStatus.NOT_STARTED_YET;
+            created.CreatedById = createdById;
+            created.GroupId = task.GroupId;
+            created.MainTaskId = task.MainTaskId;
 
-            _context.Tasks.Add(updatedTask);
+            _context.Tasks.Add(created);
             _context.SaveChanges();
-            return updatedTask;
+            return created;
         }
 
         public CommonResponse FilterTasks(Guid userId, string name, int? pageSize, int? page)
@@ -62,7 +62,7 @@ namespace DataAccess.Repositories.Implements
                     Name = task.Name,
                     EndDateDeadline = task.EndDateDeadline.ToString("MMMM d, yyyy | hh:mm tt"),
                     ImpotantLevel = task.ImpotantLevel.ToString(),
-                    EstimatedDays = task.EstimatedDays + " ngày",
+                    EstimatedDays = task.EstimatedDays.ToString(),
                     Status = task.Status.ToString(),
                     CreatedBy = new UserDTOForTaskList
                     {
@@ -83,7 +83,7 @@ namespace DataAccess.Repositories.Implements
 
             response.Data = taskDTOs;
             response.Pagination = pagination;
-            response.Message = "Filter danh sách task thành công.";
+            response.Message = "Filter task list success.";
             response.Status = 200;
 
             return response;
@@ -105,7 +105,7 @@ namespace DataAccess.Repositories.Implements
                     Name = task.Name,
                     EndDateDeadline = task.EndDateDeadline.ToString("MMMM d, yyyy | hh:mm tt"),
                     ImpotantLevel = task.ImpotantLevel.ToString(),
-                    EstimatedDays = task.EstimatedDays + " ngày",
+                    EstimatedDays = task.EstimatedDays.ToString(),
                     Status = task.Status.ToString(),
                     CreatedBy = new UserDTOForTaskList
                     {
@@ -162,6 +162,17 @@ namespace DataAccess.Repositories.Implements
             BusinessObject.Models.Task deletedTask = FindById(taskId);
             _context.Tasks.Remove(deletedTask);
             return _context.SaveChanges();
+        }
+
+        public BusinessObject.Models.Task FindByIdAndUserId(Guid id, Guid userId)
+        {
+            BusinessObject.Models.Task task = _context.Tasks.FirstOrDefault(t => t.Id == id);
+            Guid groupIdTheTaskBelong = task.GroupId;
+            if (_context.Members.FirstOrDefault(m => m.GroupId == groupIdTheTaskBelong && m.UserId == userId && m.LeftDate == null) != null)
+            {
+                return task;
+            }
+            else throw new Exception("Member does not belong to the group this task belong.");
         }
     }
 }

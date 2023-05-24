@@ -4,8 +4,10 @@ using BusinessObject.DTOs.Common;
 using BusinessObject.Enums;
 using BusinessObject.Models;
 using DataAccess.Services;
+using DataAccess.Services.Implements;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Transactions;
 
 namespace API_JoinIn.Controllers
 {
@@ -72,7 +74,8 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                return new OkObjectResult(_taskService.FilterTasks(userId, name, pageSize, page));
+                CommonResponse commonResponse = _taskService.FilterTasks(userId, name, pageSize, page);
+                return new OkObjectResult(commonResponse);
             }
             catch (Exception ex)
             {
@@ -90,9 +93,9 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                response.Status = StatusCodes.Status200OK;;
-                response.Message = "Lấy chi tiết task thành công.";
-                response.Data = _taskService.GetDetailById(id);
+                response.Status = StatusCodes.Status200OK; ;
+                response.Message = "Get task's detail success.";
+                response.Data = _taskService.GetDetailById(id, userId);
                 return new OkObjectResult(response);
             }
             catch (Exception ex)
@@ -109,20 +112,19 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                Guid createdById = Guid.NewGuid();
-                TaskRecordDTO taskRecordDTO = _taskService.CreateTask(task, createdById);
-                if (taskRecordDTO != null)
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    response.Status = StatusCodes.Status200OK;;
-                    response.Message = "Tạo task thành công.";
-                    response.Data = taskRecordDTO;
-                    return new OkObjectResult(response);
-                }
-                else
-                {
-                    response.Status = StatusCodes.Status500InternalServerError;;
-                    response.Message = "Tạo task không thành công.";
-                    return new OkObjectResult(response);
+                    Guid createdById = Guid.NewGuid();
+                    TaskRecordDTO taskRecordDTO = _taskService.CreateTask(task, createdById);
+                    if (taskRecordDTO != null)
+                    {
+                        response.Status = StatusCodes.Status200OK; ;
+                        response.Message = "Create task success.";
+                        response.Data = taskRecordDTO;
+                        scope.Complete();
+                        return new OkObjectResult(response);
+                    }
+                    else throw new Exception("Create task not success");
                 }
             }
             catch (Exception ex)
@@ -139,20 +141,19 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                Guid userId = Guid.NewGuid();
-                TaskRecordDTO taskRecordDTO = _taskService.UpdateTask(task, userId);
-                if (taskRecordDTO != null)
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    response.Status = StatusCodes.Status200OK;
-                    response.Message = "Cập nhật task thành công.";
-                    response.Data = taskRecordDTO;
-                    return new OkObjectResult(response);
-                }
-                else
-                {
-                    response.Status = StatusCodes.Status500InternalServerError; ;
-                    response.Message = "Cập nhật task không thành công.";
-                    return new OkObjectResult(response);
+                    Guid userId = Guid.NewGuid();
+                    TaskRecordDTO taskRecordDTO = _taskService.UpdateTask(task, userId);
+                    if (taskRecordDTO != null)
+                    {
+                        response.Status = StatusCodes.Status200OK;
+                        response.Message = "Update task success.";
+                        response.Data = taskRecordDTO;
+                        scope.Complete();
+                        return new OkObjectResult(response);
+                    }
+                    else throw new Exception("Update task not success");
                 }
             }
             catch (Exception ex)
@@ -169,20 +170,20 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                Guid userId = Guid.NewGuid();
-                int result = _taskService.DeleteTask(taskId, userId);
-                if (result != 0)
+                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    response.Status = StatusCodes.Status200OK;
-                    response.Message = "Xóa task thành công.";
-                    return new OkObjectResult(response);
+                    Guid userId = Guid.NewGuid();
+                    int result = _taskService.DeleteTask(taskId, userId);
+                    if (result != 0)
+                    {
+                        response.Status = StatusCodes.Status200OK;
+                        response.Message = "Delete task success.";
+                        scope.Complete();
+                        return new OkObjectResult(response);
+                    }
+                    else throw new Exception("Delete task not success");
                 }
-                else
-                {
-                    response.Status = StatusCodes.Status500InternalServerError; ;
-                    response.Message = "Xóa task không thành công.";
-                    return new OkObjectResult(response);
-                }
+                    
             }
             catch (Exception ex)
             {

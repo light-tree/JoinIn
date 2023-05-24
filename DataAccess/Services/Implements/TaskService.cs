@@ -28,16 +28,20 @@ namespace DataAccess.Services.Implements
 
         public TaskRecordDTO CreateTask(TaskDTOForCreating task, Guid createdById)
         {
+            if (task.AssignedForIds != null) 
+                if (task.AssignedForIds.GroupBy(x => x).Any(g => g.Count() > 1))
+                    throw new Exception("Exist duplicated member Id.");
             if (_memberRepository.FindByUserIdAndGroupId(createdById, task.GroupId) == null) 
-                throw new Exception("Member không thuộc group hoặc 1 trong member và group không tồn tại.");
+                throw new Exception("Creater not belong to group or 1 between member or group is not exist.");
             if (_taskRepository.FindByName(task.Name) != null) 
-                throw new Exception("Tên task đã tồn tại.");
+                throw new Exception("Duplicated task's name.");
             Guid newTaskId = _taskRepository.CreateTask(task, createdById).Id;
 
             List<Guid> assignedForIds = new List<Guid>();
-            foreach(Guid assignedFor in task.AssignedForIds){
+            foreach(Guid assignedFor in task.AssignedForIds == null ? new List<Guid>() : task.AssignedForIds)
+            {
                 if (_memberRepository.FindByUserIdAndGroupId(assignedFor, task.GroupId) == null) 
-                    throw new Exception("Member không thuộc group hoặc 1 trong member và group không tồn tại.");
+                    throw new Exception("Member with Id: " + assignedFor + " not belong to group or 1 between member or group is not exist.");
                 assignedForIds.Add(assignedFor);
             }
             _assignedTaskRepository.CreateAssignedTasks(assignedForIds, newTaskId, createdById);
@@ -50,10 +54,10 @@ namespace DataAccess.Services.Implements
             return _taskRepository.FilterTasks(userId, name, pageSize, page);
         }
 
-        public TaskDetailDTO GetDetailById(Guid id)
+        public TaskDetailDTO GetDetailById(Guid id, Guid userId)
         {
-            BusinessObject.Models.Task task = _taskRepository.FindById(id);
-            if (task == null) throw new Exception("Task không tồn tại.");
+            BusinessObject.Models.Task task = _taskRepository.FindByIdAndUserId(id, userId);
+            if (task == null) throw new Exception("Task is not exist.");
             return new TaskDetailDTO()
             {
                 Id = task.Id,
@@ -62,7 +66,7 @@ namespace DataAccess.Services.Implements
                 EndDateDeadline = task.EndDateDeadline.ToString("MMMM d, yyyy | hh:mm tt"),
                 FinishedDate = task.FinishedDate == null ? "-" : task.FinishedDate.Value.ToString("MMMM d, yyyy | hh:mm tt"),
                 ImpotantLevel = task.ImpotantLevel.ToString(),
-                EstimatedDays = task.EstimatedDays + " ngày",
+                EstimatedDays = task.EstimatedDays.ToString(),
                 Status = task.Status.ToString(),
                 Description = task.Description
             };
@@ -70,20 +74,24 @@ namespace DataAccess.Services.Implements
 
         public TaskRecordDTO UpdateTask(TaskDTOForUpdating taskDTO, Guid userId)
         {
+            if (taskDTO.AssignedForIds != null)
+                if (taskDTO.AssignedForIds.GroupBy(x => x).Any(g => g.Count() > 1))
+                    throw new Exception("Exist duplicated member Id.");
             BusinessObject.Models.Task task = _taskRepository.FindById(taskDTO.Id);
-            if (task == null) throw new Exception("Task không tồn tại.");
+            if (task == null) throw new Exception("Task is not exist.");
             if (_memberRepository.FindByUserIdAndGroupId(userId, task.GroupId) == null)
-                throw new Exception("Member không thuộc group hoặc 1 trong member và group không tồn tại.");
-            foreach (Guid assignedFor in taskDTO.AssignedForIds)
+                throw new Exception("Updater not belong to group or 1 between member or group is not exist.");
+
+            foreach (Guid assignedFor in taskDTO.AssignedForIds == null ? new List<Guid>() : taskDTO.AssignedForIds)
             {
                 if (_memberRepository.FindByUserIdAndGroupId(assignedFor, task.GroupId) == null)
-                    throw new Exception("Member không thuộc group hoặc 1 trong member và group không tồn tại.");
+                    throw new Exception("Member with Id: " + assignedFor + " not belong to group or 1 between member or group is not exist.");
             }
 
             _taskRepository.UpdateTask(taskDTO, userId);
 
             List<Guid> currentAssignedForIds = _assignedTaskRepository.FindByTaskId(task.Id).Select(a => a.AssignedForId).ToList();
-            List<Guid> newAssignedForIds = taskDTO.AssignedForIds;
+            List<Guid> newAssignedForIds = taskDTO.AssignedForIds == null ? new List<Guid>() : taskDTO.AssignedForIds;
             List<Guid> lostAssignedForIds = currentAssignedForIds.Except(newAssignedForIds).ToList();
             foreach(Guid id in lostAssignedForIds)
             {
@@ -100,7 +108,7 @@ namespace DataAccess.Services.Implements
             BusinessObject.Models.Task deletedTask = _taskRepository.FindById(taskId);
             if (deletedTask == null) throw new Exception("Task không tồn tại.");
             if (_memberRepository.FindByUserIdAndGroupId(userId, deletedTask.GroupId) == null)
-                throw new Exception("Member không thuộc group hoặc 1 trong member và group không tồn tại.");
+                throw new Exception("Deleter not belong to group or 1 between member or group is not exist.");
 
             List<BusinessObject.Models.Task> deletedSubTasks = _taskRepository.FindByMainTaskId(taskId);
             if(deletedSubTasks.Count != 0)

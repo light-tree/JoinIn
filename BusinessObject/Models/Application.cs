@@ -23,7 +23,7 @@ namespace BusinessObject.Models
         public DateTime? ConfirmedDate { get; set;}
 
         [Required]
-        public string Description { get; set;}
+        public string? Description { get; set;}
 
         [Required]
         [ForeignKey(nameof(User))]

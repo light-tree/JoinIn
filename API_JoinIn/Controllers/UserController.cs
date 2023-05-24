@@ -1,4 +1,4 @@
-﻿using BusinessObject.DTOs.User;
+using BusinessObject.DTOs.User;
 using BusinessObject.Models;
 using DataAccess.Services;
 using FirebaseAdmin;
@@ -295,9 +295,9 @@ namespace API_JoinIn.Controllers
                     user.Status = UserStatus.ACTIVE;
                     user.IsAdmin = false;
                     // check danh sách major
-                    foreach (string id in userRequestDTO.MajorIdList)
+                    foreach (Guid id in userRequestDTO.MajorIdList)
                     {
-                        var tmp = majorService.findMajorById(id);
+                        var tmp = majorService.FindMajorById(id);
                         if (tmp != null)
                         {
                            await userMajorService.UpdateUserMajor(Guid.Parse(id), user.Id);

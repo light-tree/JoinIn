@@ -50,6 +50,7 @@ namespace BusinessObject.Migrations
                     Gender = table.Column<bool>(type: "bit", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OtherContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Theme = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -239,6 +240,7 @@ namespace BusinessObject.Migrations
                     SubjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Skill = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CurrentMilestoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },

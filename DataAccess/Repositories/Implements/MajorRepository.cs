@@ -1,5 +1,6 @@
-﻿using BusinessObject.Data;
+using BusinessObject.Data;
 using BusinessObject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +17,11 @@ namespace DataAccess.Repositories.Implements
             _context = context;
         }
 
-        public async Task<Major> findByID(string id)
+        public async Task<Major> FindByID(Guid id)
         {
-            Major major = null;
             try
             {
-                
-                major = await _context.Majors.FindAsync(id);
-                return major;
+                return await _context.Majors.FirstOrDefaultAsync(m => m.Id == id);
             }
             catch (Exception e)
             {
