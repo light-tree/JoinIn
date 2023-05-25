@@ -13,5 +13,6 @@ namespace DataAccess.Repositories
         int DeleteByAssignedForId(Guid lostAssignedForId);
         int DeleteByTaskId(Guid taskId);
         List<AssignedTask> FindByTaskId(Guid id);
+        AssignedTask FindByTaskIdAndAssignedForId(Guid taskId, Guid assignedForId);
     }
 }

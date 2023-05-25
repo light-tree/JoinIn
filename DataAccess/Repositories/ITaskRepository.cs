@@ -19,5 +19,6 @@ namespace DataAccess.Repositories
         int UpdateTask(TaskDTOForUpdating taskDTO, Guid userId);
         List<BusinessObject.Models.Task> FindByMainTaskId(Guid taskId);
         int DeleteByTaskId(Guid taskId);
+        int UpdateTaskStatus(TaskDTOForUpdatingStatus taskDTO, Guid userId);
     }
 }

@@ -174,5 +174,21 @@ namespace DataAccess.Repositories.Implements
             }
             else throw new Exception("Member does not belong to the group this task belong.");
         }
+
+        public int UpdateTaskStatus(TaskDTOForUpdatingStatus taskDTO, Guid userId)
+        {
+            BusinessObject.Models.Task updatedTask = FindById(taskDTO.Id);
+            updatedTask.Status = taskDTO.Status;
+            if (updatedTask.Status == BusinessObject.Enums.TaskStatus.FINISHED)
+            {
+                updatedTask.FinishedDate = DateTime.Now;
+            }
+            else
+            {
+                updatedTask.FinishedDate = null;
+            }
+            _context.Tasks.Update(updatedTask);
+            return _context.SaveChanges();
+        }
     }
 }

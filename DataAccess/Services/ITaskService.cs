@@ -14,5 +14,6 @@ namespace DataAccess.Services
         CommonResponse FilterTasks(Guid userId, string name, int? pageSize, int? page);
         TaskDetailDTO GetDetailById(Guid id, Guid userId);
         TaskRecordDTO UpdateTask(TaskDTOForUpdating task, Guid userId);
+        TaskRecordDTO UpdateTaskStatus(TaskDTOForUpdatingStatus task, Guid userId);
     }
 }
