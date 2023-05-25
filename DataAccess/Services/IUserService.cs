@@ -11,8 +11,14 @@ namespace DataAccess.Services
     {
         public User AddUser(User user);
 
-        public Task<bool> checkDuplicatedEmail(string email);
+        public Task<bool> CheckDuplicatedEmail(string email);
 
         public Task<bool> UpdateUser(User user);
+
+        public Task<User> FindUserByGuid(Guid guid);
+
+        public Task<User> FindUserByEmail(string email);
+
+        public Task<User> FindUserByToken(string token);
     }
 }

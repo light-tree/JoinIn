@@ -50,6 +50,30 @@ namespace DataAccess.Security
 
             return jwtTokenHandler.WriteToken(token);
         }
+        public  ClaimsPrincipal DecodeJwtToken(string jwtToken)
+        {
+            var secretKey = _config["JwtConfig:SecretKey"];
+            var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+
+            try
+            {
+                var claimsPrincipal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
+                return claimsPrincipal;
+            }
+            catch (Exception e)
+            {
+                // Handle token validation errors here
+                return null;
+            }
+        }
 
     }
 }

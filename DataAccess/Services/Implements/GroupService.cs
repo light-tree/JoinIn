@@ -36,7 +36,7 @@ namespace DataAccess.Services.Implements
             foreach(GroupMajorDTO groupMajorDTO in groupDTOForCreating.GroupMajorDTOs)
             {
                 if (_majorRepository.FindByID(groupMajorDTO.MajorId) != null)
-                    _groupMajorRepository.CreateGroupMajor(groupMajorDTO);
+                    _groupMajorRepository.CreateGroupMajor(group.Id, groupMajorDTO);
                 else throw new Exception("Major with Id: " + groupMajorDTO.MajorId + " is not exist.");
             }
             return group.Id;

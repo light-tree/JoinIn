@@ -1,4 +1,4 @@
-﻿using BusinessObject.Models;
+using BusinessObject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace DataAccess.Repositories
 {
     public interface IMajorRepository
     {
-        Task<Major> FindByID(Guid id);
+        Major FindByID(Guid id);
     }
 }

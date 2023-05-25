@@ -9,8 +9,6 @@ namespace BusinessObject.DTOs
 {
     public class GroupMajorDTO
     {
-        public Guid GroupId { get; set; }
-
         public Guid MajorId { get; set; }
 
         public int MemberCount { get; set; }

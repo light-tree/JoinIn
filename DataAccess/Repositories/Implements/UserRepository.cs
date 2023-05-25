@@ -17,7 +17,7 @@ namespace DataAccess.Repositories.Implements
             this._context = context;
         }
 
-        public User addUser(User user)
+        public User AddUser(User user)
         {
             try
             {
@@ -47,13 +47,13 @@ namespace DataAccess.Repositories.Implements
         }
 
 
-        public async Task<bool> checkDuplicatedEmail(string email)
+        public async Task<bool> CheckDuplicatedEmail(string email)
         {
             bool check = await _context.Users.AnyAsync(u => u.Email == email);
             return check;
         }
 
-        public User FindAccountByEmail(string email)
+        public async Task<User> FindAccountByEmail(string email)
         {
             try
             {
@@ -65,13 +65,37 @@ namespace DataAccess.Repositories.Implements
             }
         }
 
-
-        public async Task<bool> updateUserProfile(User user)
+        public async Task<User> FindAccountByGUID(Guid id)
         {
             try
             {
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<User> FindAccountByToken(string token)
+        {
+            try
+            {
+                return await _context.Users.FirstOrDefaultAsync(p => p.Token == token);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> UpdateUserProfile(User user)
+        {
+            try
+            {
+                
+                _context.Entry(user).State = EntityState.Modified;
+                _context.SaveChanges();
                 return true;
             }
             catch (Exception e)

@@ -19,19 +19,34 @@ namespace DataAccess.Services.Implements
         public User AddUser(User user)
         {
             user.Password = PasswordHasher.Hash(user.Password);
-            return userRepository.addUser(user);
+            return userRepository.AddUser(user);
 
         }
         public async Task<bool> UpdateUser(User user)
         {
-            return await userRepository.updateUserProfile(user);
+            return await userRepository.UpdateUserProfile(user);
 
         }
 
 
-        public async Task<bool> checkDuplicatedEmail(string email)
+        public async Task<bool> CheckDuplicatedEmail(string email)
         {
-            return await userRepository.checkDuplicatedEmail(email);
+            return await userRepository.CheckDuplicatedEmail(email);
+        }
+
+        public async Task<User> FindUserByGuid(Guid id)
+        {
+            return await userRepository.FindAccountByGUID(id);
+        }
+
+        public async Task<User> FindUserByEmail(string email)
+        {
+            return await userRepository.FindAccountByEmail(email);
+        }
+
+        public async Task<User> FindUserByToken(string token)
+        {
+           return await userRepository.FindAccountByToken(token);
         }
     }
 }

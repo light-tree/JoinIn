@@ -23,9 +23,9 @@ namespace DataAccess.Services.Implements
      
         }
 
-        public string authenticate(LoginDTO loginDTO)
+        public async Task<string> Authenticate(LoginDTO loginDTO)
         {
-            User account = userRepository.FindAccountByEmail(loginDTO.UserName);
+            User account = await userRepository.FindAccountByEmail(loginDTO.UserName);
             bool checkPassword = false;
             if (account == null)
             {
@@ -41,24 +41,36 @@ namespace DataAccess.Services.Implements
                 }
 
             }
+            if(account.Status == BusinessObject.Enums.UserStatus.UNVERIFIED)
+            {
+                return "Unverify";
+            }
 
             //if (account.Status == BussinessObject.Status.AccountStatus.INACTIVE)
             //{
             //    throw new TaskCanceledException("Tài khoản đã bị khóa");
             //}
-
-            string role = null;
-            role = account.GetType().Name.ToString();
            
+            string role = null;
+            if (account.IsAdmin)
+            {
+                role = "Admin";
+            }
+            else
+            {
+                role = "User";
+            }
+           
+
             string token = jwtService.GenerateJwtToken(account, role);
             return token;
         }
 
         // Dành cho đăng nhập bằng google không cần mật khẩu
 
-        public string authenticateByGoogleOauth2(string email)
+        public async Task<string> AuthenticateByGoogleOauth2(string email)
         {
-            User account = userRepository.FindAccountByEmail(email);
+            User account = await userRepository.FindAccountByEmail(email);
             if (account == null)
             {
                 return null;
@@ -69,9 +81,18 @@ namespace DataAccess.Services.Implements
                 //{
                 //    throw new TaskCanceledException("Tài khoản đã bị khóa");
                 //}
-
+                if (account.Status == BusinessObject.Enums.UserStatus.UNVERIFIED)
+                {
+                    return "Unverify";
+                }
                 string role = null;
-                role = account.GetType().Name.ToString();
+                if (account.IsAdmin)
+                {
+                    role = "Admin"; 
+                } else
+                {
+                    role = "User";
+                }
 
                 string token = jwtService.GenerateJwtToken(account, role);
                 return token;

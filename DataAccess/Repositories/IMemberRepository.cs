@@ -12,6 +12,7 @@ namespace DataAccess.Repositories
     {
         Member CreateMember(Guid userId, Guid groupId, MemberRole role);
         Member FindByUserIdAndGroupId(Guid createdById, Guid groupId);
+        Member FindByIdAndGroupId(Guid id, Guid groupId);
         MemberRole? GetRoleInThisGroup(Guid userId, Guid groupId);
     }
 }

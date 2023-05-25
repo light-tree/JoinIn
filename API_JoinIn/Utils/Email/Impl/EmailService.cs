@@ -21,13 +21,13 @@ namespace API_JoinIn.Utils.Email.Impl
 
         }
 
-        public async Task SendConfirmationEmail(string toEmail)
+        public async Task SendConfirmationEmail(string toEmail, string emailVerificationLink)
         {
             try
             {
-                // tạo confirmlink 
-                var emailVerificationLink = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(toEmail);
-                var defaultApp = FirebaseApp.DefaultInstance;
+                //// tạo confirmlink 
+                //var emailVerificationLink = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(toEmail);
+                //var defaultApp = FirebaseApp.DefaultInstance;
 
 
                 // gửi email confirm
@@ -52,7 +52,45 @@ namespace API_JoinIn.Utils.Email.Impl
                     }
                 }
             } catch(Exception ex) {
-                Console.WriteLine(ex);
+               
+            }
+
+        }
+
+        public async Task SendRecoveryPasswordEmail(string toEmail, string passwordRecoveryLink)
+        {
+            try
+            {
+                //// tạo confirmlink 
+                //var emailVerificationLink = await FirebaseAuth.DefaultInstance.GenerateEmailVerificationLinkAsync(toEmail);
+                //var defaultApp = FirebaseApp.DefaultInstance;
+
+
+                // gửi email confirm
+                var from = new MailAddress(_smtpUsername);
+                var to = new MailAddress(toEmail);
+                var subject = "Xác nhận email";
+                var body = $"<p>Nhấp vào liên kết sau để xác nhận thay đổi mật khẩu: {passwordRecoveryLink}</p>";
+
+                using (var smtpClient = new SmtpClient(_smtpHost, _smtpPort))
+                {
+                    smtpClient.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
+                    smtpClient.EnableSsl = true;
+
+
+                    using (var message = new MailMessage(from, to))
+                    {
+                        message.Subject = subject;
+                        message.Body = body;
+                        message.IsBodyHtml = true;
+
+                        await smtpClient.SendMailAsync(message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
 
         }

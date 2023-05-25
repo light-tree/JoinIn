@@ -1,4 +1,4 @@
-﻿using BusinessObject.Data;
+using BusinessObject.Data;
 using BusinessObject.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,11 +17,11 @@ namespace DataAccess.Repositories.Implements
             _context = context;
         }
 
-        public async Task<Major> FindByID(Guid id)
+        public Major FindByID(Guid id)
         {
             try
             {
-                return await _context.Majors.FirstOrDefaultAsync(m => m.Id == id);
+                return _context.Majors.FirstOrDefault(m => m.Id == id);
             }
             catch (Exception e)
             {

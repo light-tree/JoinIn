@@ -9,8 +9,8 @@ namespace DataAccess.Services
 {
     public interface IAuthenticateService
     {
-        public string authenticate(LoginDTO loginDTO);
+        public Task<string> Authenticate(LoginDTO loginDTO);
 
-        public string authenticateByGoogleOauth2(string email);
+        public Task<string> AuthenticateByGoogleOauth2(string email);
     }
 }

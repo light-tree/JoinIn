@@ -9,6 +9,6 @@ namespace DataAccess.Services
 {
     public interface IMajorService
     {
-        Task<Major> FindMajorById(Guid id);
+        Major FindMajorById(Guid id);
     }
 }
