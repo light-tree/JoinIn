@@ -40,6 +40,14 @@ namespace DataAccess.Services.Implements
                 throw new Exception("Creater not belong to group or 1 between member or group is not exist.");
             if (_taskRepository.FindByName(task.Name) != null) 
                 throw new Exception("Duplicated task's name.");
+            if(task.MainTaskId != null)
+            {
+                BusinessObject.Models.Task mainTask = _taskRepository.FindById(task.MainTaskId.Value);
+                if (mainTask == null)
+                    throw new Exception("Main task does not exist.");
+                else if (mainTask.MainTaskId != null)
+                    throw new Exception("Main task is already a subtask.");
+            }
             Guid newTaskId = _taskRepository.CreateTask(task, createdById).Id;
 
             List<Guid> assignedForIds = new List<Guid>();
@@ -84,8 +92,13 @@ namespace DataAccess.Services.Implements
                     throw new Exception("Exist duplicated member Id.");
             BusinessObject.Models.Task task = _taskRepository.FindById(taskDTO.Id);
             if (task == null) throw new Exception("Task is not exist.");
+
             if (_memberRepository.FindByUserIdAndGroupId(userId, task.GroupId) == null)
                 throw new Exception("Updater not belong to group or 1 between member or group is not exist.");
+
+            MemberRole? memberRole = _memberRepository.GetRoleInThisGroup(userId, task.GroupId);
+            if (memberRole != MemberRole.LEADER && memberRole != MemberRole.SUB_LEADER)
+                throw new Exception("This user is not leader or sub leader in this group.");
 
             foreach (Guid assignedFor in taskDTO.AssignedForIds == null ? new List<Guid>() : taskDTO.AssignedForIds)
             {
@@ -114,6 +127,9 @@ namespace DataAccess.Services.Implements
             if (deletedTask == null) throw new Exception("Task không tồn tại.");
             if (_memberRepository.FindByUserIdAndGroupId(userId, deletedTask.GroupId) == null)
                 throw new Exception("Deleter not belong to group or 1 between member or group is not exist.");
+            MemberRole? memberRole = _memberRepository.GetRoleInThisGroup(userId, deletedTask.GroupId);
+            if (memberRole != MemberRole.LEADER && memberRole != MemberRole.SUB_LEADER)
+                throw new Exception("This user is not leader or sub leader in this group.");
 
             List<BusinessObject.Models.Task> deletedSubTasks = _taskRepository.FindByMainTaskId(taskId);
             if(deletedSubTasks.Count != 0)

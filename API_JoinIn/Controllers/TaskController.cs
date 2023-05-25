@@ -130,7 +130,8 @@ namespace API_JoinIn.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateTask(TaskDTOForUpdating task)
+        [Route("team-leaders")]
+        public IActionResult UpdateTaskByTeamLeaders(TaskDTOForUpdating task)
         {
             CommonResponse response = new CommonResponse();
             try
@@ -169,6 +170,48 @@ namespace API_JoinIn.Controllers
                 return new OkObjectResult(response);
             }
         }
+
+        //[HttpPut]
+        //[Route("team-member")]
+        //public IActionResult UpdateTaskByTeamMember(TaskDTOForUpdating task)
+        //{
+        //    CommonResponse response = new CommonResponse();
+        //    try
+        //    {
+        //        using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        //        {
+        //            Guid userId = Guid.Empty;
+        //            var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        //            var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+        //            if (decodedToken != null)
+        //            {
+        //                var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+        //                if (userIdClaim != null)
+        //                {
+        //                    userId = Guid.Parse(userIdClaim.Value);
+        //                    // Do something with user ID here
+        //                }
+        //                else throw new Exception("Internal server error");
+        //            }
+        //            TaskRecordDTO taskRecordDTO = _taskService.UpdateTask(task, userId);
+        //            if (taskRecordDTO != null)
+        //            {
+        //                response.Status = StatusCodes.Status200OK;
+        //                response.Message = "Update task success.";
+        //                response.Data = taskRecordDTO;
+        //                scope.Complete();
+        //                return new OkObjectResult(response);
+        //            }
+        //            else throw new Exception("Update task not success");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Status = StatusCodes.Status500InternalServerError; ;
+        //        response.Message = ex.Message;
+        //        return new OkObjectResult(response);
+        //    }
+        //}
 
         [HttpDelete]
         public IActionResult DeleteTask(Guid taskId)

@@ -59,7 +59,7 @@ namespace DataAccess.Repositories.Implements
 
         public List<AssignedTask> FindByTaskId(Guid id)
         {
-            return _context.AssignedTasks.Where(a => a.AssignedForId == id).ToList();
+            return _context.AssignedTasks.Where(a => a.TaskId == id).ToList();
         }
     }
 }
