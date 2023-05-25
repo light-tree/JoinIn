@@ -21,6 +21,11 @@ namespace DataAccess.Repositories.Implements
             return null;
         }
 
+        public List<UserMajor> FindByUserId(Guid userId)
+        {
+            return _context.UserMajors.Where(um => um.UserId == userId).ToList();
+        }
+
         public async Task<bool> UpdateUserMajor(Guid majorId, Guid userId)
         {
             try

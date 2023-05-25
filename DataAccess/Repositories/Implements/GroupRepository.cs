@@ -25,7 +25,7 @@ namespace DataAccess.Repositories.Implements
                 Name = groupDTOForCreating.Name,
                 CreatedDate = DateTime.Now,
                 GroupSize = groupDTOForCreating.GroupSize,
-                MemberCount = 0,
+                MemberCount = 1,
                 SchoolName = groupDTOForCreating.SchoolName,
                 SubjectName = groupDTOForCreating.SubjectName,
                 ClassName = groupDTOForCreating.ClassName,

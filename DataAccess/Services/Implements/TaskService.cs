@@ -1,5 +1,6 @@
 ﻿using BusinessObject.DTOs;
 using BusinessObject.DTOs.Common;
+using BusinessObject.Enums;
 using BusinessObject.Models;
 using DataAccess.Repositories;
 using System;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DataAccess.Services.Implements
 {
@@ -31,6 +33,9 @@ namespace DataAccess.Services.Implements
             if (task.AssignedForIds != null) 
                 if (task.AssignedForIds.GroupBy(x => x).Any(g => g.Count() > 1))
                     throw new Exception("Exist duplicated member Id.");
+            MemberRole? memberRole = _memberRepository.GetRoleInThisGroup(createdById, task.GroupId);
+            if (memberRole != MemberRole.LEADER && memberRole != MemberRole.SUB_LEADER)
+                throw new Exception("This user is not leader or sub leader in this group.");
             if (_memberRepository.FindByUserIdAndGroupId(createdById, task.GroupId) == null) 
                 throw new Exception("Creater not belong to group or 1 between member or group is not exist.");
             if (_taskRepository.FindByName(task.Name) != null) 
@@ -40,11 +45,11 @@ namespace DataAccess.Services.Implements
             List<Guid> assignedForIds = new List<Guid>();
             foreach(Guid assignedFor in task.AssignedForIds == null ? new List<Guid>() : task.AssignedForIds)
             {
-                if (_memberRepository.FindByUserIdAndGroupId(assignedFor, task.GroupId) == null) 
+                if (_memberRepository.FindByIdAndGroupId(assignedFor, task.GroupId) == null) 
                     throw new Exception("Member with Id: " + assignedFor + " not belong to group or 1 between member or group is not exist.");
                 assignedForIds.Add(assignedFor);
             }
-            _assignedTaskRepository.CreateAssignedTasks(assignedForIds, newTaskId, createdById);
+            _assignedTaskRepository.CreateAssignedTasks(assignedForIds, newTaskId, _memberRepository.FindByUserIdAndGroupId(createdById, task.GroupId).Id);
 
             return _taskRepository.FindRecordById(newTaskId);
         }
@@ -84,7 +89,7 @@ namespace DataAccess.Services.Implements
 
             foreach (Guid assignedFor in taskDTO.AssignedForIds == null ? new List<Guid>() : taskDTO.AssignedForIds)
             {
-                if (_memberRepository.FindByUserIdAndGroupId(assignedFor, task.GroupId) == null)
+                if (_memberRepository.FindByIdAndGroupId(assignedFor, task.GroupId) == null)
                     throw new Exception("Member with Id: " + assignedFor + " not belong to group or 1 between member or group is not exist.");
             }
 
@@ -98,7 +103,7 @@ namespace DataAccess.Services.Implements
                 _assignedTaskRepository.DeleteByAssignedForId(id);
             }
             List<Guid> addedAssignedForIds = newAssignedForIds.Except(currentAssignedForIds).ToList();
-            _assignedTaskRepository.CreateAssignedTasks(addedAssignedForIds, task.Id, userId);
+            _assignedTaskRepository.CreateAssignedTasks(addedAssignedForIds, task.Id, _memberRepository.FindByUserIdAndGroupId(userId, task.GroupId).Id);
 
             return _taskRepository.FindRecordById(task.Id);
         }

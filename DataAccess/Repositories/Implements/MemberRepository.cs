@@ -33,6 +33,11 @@ namespace DataAccess.Repositories.Implements
             return member;
         }
 
+        public Member FindByIdAndGroupId(Guid id, Guid groupId)
+        {
+            return _context.Members.FirstOrDefault(m => m.Id == id && m.GroupId == groupId && m.LeftDate == null);
+        }
+
         public Member FindByUserIdAndGroupId(Guid createdById, Guid groupId)
         {
             return _context.Members.FirstOrDefault(m => m.UserId == createdById && m.GroupId == groupId && m.LeftDate == null);

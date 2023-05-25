@@ -19,8 +19,9 @@ namespace DataAccess.Services.Implements
         private readonly IMemberRepository _memberRepository;
         private readonly IGroupMajorRepository _groupMajorRepository;
         private readonly IMajorRepository _majorRepository;
+        private readonly IUserMajorRepository _userMajorRepository;
 
-        public ApplicationService(IApplicationRepository applicationRepository, IApplicationMajorRepository applicationMajorRepository, IGroupRepository groupRepository, IMemberRepository memberRepository, IGroupMajorRepository groupMajorRepository, IMajorRepository majorRepository)
+        public ApplicationService(IApplicationRepository applicationRepository, IApplicationMajorRepository applicationMajorRepository, IGroupRepository groupRepository, IMemberRepository memberRepository, IGroupMajorRepository groupMajorRepository, IMajorRepository majorRepository, IUserMajorRepository userMajorRepository)
         {
             _applicationRepository = applicationRepository;
             _applicationMajorRepository = applicationMajorRepository;
@@ -28,6 +29,7 @@ namespace DataAccess.Services.Implements
             _memberRepository = memberRepository;
             _groupMajorRepository = groupMajorRepository;
             _majorRepository = majorRepository;
+            _userMajorRepository = userMajorRepository;
         }
 
         public Guid? ConfirmApplication(Guid leaderId, ConfirmedApplicationDTO confirmedApplicationDTO)
@@ -87,6 +89,7 @@ namespace DataAccess.Services.Implements
             if (_memberRepository.FindByUserIdAndGroupId(userId, sentApplicationDTO.GroupId) != null)
                 throw new Exception("User is already a member of this group.");
             List<GroupMajor> groupMajors = _groupMajorRepository.FindByGroupId(sentApplicationDTO.GroupId);
+            List<UserMajor> userMajors = _userMajorRepository.FindByUserId(userId);
             bool IsMatch;
             foreach (Guid majorAppliedId in sentApplicationDTO.MajorIds)
             {
@@ -97,6 +100,8 @@ namespace DataAccess.Services.Implements
                 {
                     if (majorAppliedId == groupMajor.MajorId)
                     {
+                        if(!userMajors.Select(um => um.MajorId).Contains(majorAppliedId))
+                            throw new Exception("Your application's major with Id: " + majorAppliedId + " does not match with your major.");
                         if (!(groupMajor.MemberCount > 0 && groupMajor.Status == GroupMajorStatus.OPEN))
                             throw new Exception("This group no longer need member has major with Id: " + majorAppliedId);
                         IsMatch = true;

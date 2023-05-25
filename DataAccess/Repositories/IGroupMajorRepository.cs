@@ -10,7 +10,7 @@ namespace DataAccess.Repositories
 {
     public interface IGroupMajorRepository
     {
-        GroupMajor CreateGroupMajor(GroupMajorDTO groupMajorDTO);
+        GroupMajor CreateGroupMajor(Guid id, GroupMajorDTO groupMajorDTO);
         GroupMajor? DecreaseCurrentNeededMemberCount(GroupMajor groupMajor, int v);
         List<GroupMajor> FindByGroupId(Guid groupId);
     }

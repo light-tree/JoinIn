@@ -18,12 +18,12 @@ namespace DataAccess.Repositories.Implements
             _context = context;
         }
 
-        public GroupMajor CreateGroupMajor(GroupMajorDTO groupMajorDTO)
+        public GroupMajor CreateGroupMajor(Guid groudId, GroupMajorDTO groupMajorDTO)
         {
             GroupMajor groupMajor = new GroupMajor
             {
                 MajorId = groupMajorDTO.MajorId,
-                GroupId = groupMajorDTO.GroupId,
+                GroupId = groudId,
                 MemberCount = groupMajorDTO.MemberCount,
                 Status = groupMajorDTO.Status,
             };
@@ -35,7 +35,7 @@ namespace DataAccess.Repositories.Implements
 
         public GroupMajor? DecreaseCurrentNeededMemberCount(GroupMajor groupMajor, int v)
         {
-            groupMajor.MemberCount -= 1;
+            groupMajor.MemberCount -= v;
             _context.GroupMajors.Update(groupMajor);
             if(_context.SaveChanges() == 1) return groupMajor;
             else throw new Exception("Decrease current needed member count fail.");

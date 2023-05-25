@@ -3,6 +3,7 @@ using BusinessObject.DTOs;
 using BusinessObject.DTOs.Common;
 using BusinessObject.Enums;
 using BusinessObject.Models;
+using DataAccess.Security;
 using DataAccess.Services;
 using DataAccess.Services.Implements;
 using Microsoft.AspNetCore.Mvc;
@@ -13,64 +14,33 @@ namespace API_JoinIn.Controllers
 {
     [ApiController]
     [Route("tasks")]
-    public class TaskController
+    public class TaskController : ControllerBase
     {
-        private readonly Context _context;
         private readonly ITaskService _taskService;
+        private readonly IJwtService _jwtService;
 
-        public TaskController(Context context, ITaskService taskService)
+        public TaskController(ITaskService taskService, IJwtService jwtService)
         {
-            _context = context;
             _taskService = taskService;
-        }
-
-        [HttpGet]
-        [Route("initial")]
-        public IActionResult Initial()
-        {
-            Group group = new Group();
-            group.Name = "a";
-            group.CreatedDate = DateTime.Now;
-            group.GroupSize = 10;
-            group.MemberCount = 1;
-            group.SchoolName = "b";
-            group.ClassName = "c";
-            group.SubjectName = "d";
-            group.Description = "e";
-            group.Skill = "f";
-            group.Status = GroupStatus.ACTIVE;
-            group.CurrentMilestone = null;
-            _context.Add(group);
-            _context.SaveChanges();
-
-            Milestone milestone = new Milestone();
-            milestone.Name = "a";
-            milestone.Description = "b";
-            milestone.Order = 1;
-            milestone.GroupId = _context.Groups.FirstOrDefault(g => g.Name == "a").Id;
-            _context.Add(milestone);
-            _context.SaveChanges();
-
-            group.CurrentMilestoneId = _context.Milestones.FirstOrDefault(m => m.Name == "a").Id;
-            _context.Update(group);
-            _context.SaveChanges();
-
-            for (int i = 1; i < 4; i++)
-            {
-                User user = new User();
-                user.FullName = "user fullname " + i;
-            }
-
-            CommonResponse response = new CommonResponse();
-            response.Status = StatusCodes.Status200OK;;
-            response.Message = "Initiated";
-            return new OkObjectResult(response);
+            _jwtService = jwtService;
         }
 
         [HttpGet]
         public IActionResult FilterTasks(string? name, int? pageSize, int? page)
         {
-            Guid userId = Guid.NewGuid();
+            Guid userId = Guid.Empty;
+            var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+            if (decodedToken != null)
+            {
+                var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+                if (userIdClaim != null)
+                {
+                    userId = Guid.Parse(userIdClaim.Value);
+                    // Do something with user ID here
+                }
+                else throw new Exception("Internal server error");
+            }
             CommonResponse response = new CommonResponse();
             try
             {
@@ -89,7 +59,19 @@ namespace API_JoinIn.Controllers
         [Route("{id}")]
         public IActionResult GetTaskDetail(Guid id)
         {
-            Guid userId = Guid.NewGuid();
+            Guid userId = Guid.Empty;
+            var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+            if (decodedToken != null)
+            {
+                var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+                if (userIdClaim != null)
+                {
+                    userId = Guid.Parse(userIdClaim.Value);
+                    // Do something with user ID here
+                }
+                else throw new Exception("Internal server error");
+            }
             CommonResponse response = new CommonResponse();
             try
             {
@@ -114,7 +96,19 @@ namespace API_JoinIn.Controllers
             {
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    Guid createdById = Guid.NewGuid();
+                    Guid createdById = Guid.Empty;
+                    var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                    var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+                    if (decodedToken != null)
+                    {
+                        var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+                        if (userIdClaim != null)
+                        {
+                            createdById = Guid.Parse(userIdClaim.Value);
+                            // Do something with user ID here
+                        }
+                        else throw new Exception("Internal server error");
+                    }
                     TaskRecordDTO taskRecordDTO = _taskService.CreateTask(task, createdById);
                     if (taskRecordDTO != null)
                     {
@@ -143,7 +137,19 @@ namespace API_JoinIn.Controllers
             {
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    Guid userId = Guid.NewGuid();
+                    Guid userId = Guid.Empty;
+                    var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                    var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+                    if (decodedToken != null)
+                    {
+                        var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+                        if (userIdClaim != null)
+                        {
+                            userId = Guid.Parse(userIdClaim.Value);
+                            // Do something with user ID here
+                        }
+                        else throw new Exception("Internal server error");
+                    }
                     TaskRecordDTO taskRecordDTO = _taskService.UpdateTask(task, userId);
                     if (taskRecordDTO != null)
                     {
@@ -172,7 +178,19 @@ namespace API_JoinIn.Controllers
             {
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
-                    Guid userId = Guid.NewGuid();
+                    Guid userId = Guid.Empty;
+                    var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+                    var decodedToken = _jwtService.DecodeJwtToken(jwtToken);
+                    if (decodedToken != null)
+                    {
+                        var userIdClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "Id");
+                        if (userIdClaim != null)
+                        {
+                            userId = Guid.Parse(userIdClaim.Value);
+                            // Do something with user ID here
+                        }
+                        else throw new Exception("Internal server error");
+                    }
                     int result = _taskService.DeleteTask(taskId, userId);
                     if (result != 0)
                     {

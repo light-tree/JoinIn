@@ -98,7 +98,7 @@ namespace API_JoinIn.Controllers
                     }
                     else
                     {
-                        commonResponse.Data = commonResponse.Data = new TokenResponseDTO(res); ;
+                        commonResponse.Data = commonResponse.Data = res; ;
                         commonResponse.Status = 200;
                         return (Ok(commonResponse));
                     }
@@ -155,7 +155,7 @@ namespace API_JoinIn.Controllers
                         //tạo token
                         // khi người dùng đăng nhập bằng token vừa tạo => đẩy người dùng về trang điền thông tin
                         token = await authenticateService.AuthenticateByGoogleOauth2(userData.Email);
-                        commonResponse.Data = new TokenResponseDTO(token);
+                        commonResponse.Data = token;
                         commonResponse.Status = 200;
 
                         scope.Complete(); // commit transaction

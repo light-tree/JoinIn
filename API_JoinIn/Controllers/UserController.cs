@@ -194,7 +194,7 @@ namespace API_JoinIn.Controllers
 
                         scope.Complete();
                         commonResponse.Message = "Successfully";
-                        commonResponse.Data = new TokenResponseDTO(jwtToken);
+                        commonResponse.Data = jwtToken;
                         return Ok(commonResponse);
 
                     } catch
@@ -300,7 +300,7 @@ namespace API_JoinIn.Controllers
                         var tmp = majorService.FindMajorById(id);
                         if (tmp != null)
                         {
-                           await userMajorService.UpdateUserMajor(Guid.Parse(id), user.Id);
+                           await userMajorService.UpdateUserMajor(id, user.Id);
                           
                         }
                         else throw new Exception("Your major is invalid");

@@ -9,6 +9,6 @@ namespace DataAccess.Repositories
 {
     public interface IMajorRepository
     {
-        Task<Major> FindByID(Guid id);
+        Major FindByID(Guid id);
     }
 }

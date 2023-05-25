@@ -44,7 +44,7 @@ namespace API_JoinIn.Controllers
                 else
                 {
                     commonResponse.Status = 200;
-                    commonResponse.Data =  new TokenResponseDTO(res);
+                    commonResponse.Data =  res;
                     return Ok(commonResponse);
 
                 }
