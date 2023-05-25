@@ -144,5 +144,23 @@ namespace DataAccess.Services.Implements
             _assignedTaskRepository.DeleteByTaskId(taskId);
             return _taskRepository.DeleteByTaskId(taskId);
         }
+
+        public TaskRecordDTO UpdateTaskStatus(TaskDTOForUpdatingStatus taskStatus, Guid userId)
+        {
+            BusinessObject.Models.Task task = _taskRepository.FindById(taskStatus.Id);
+            if (task == null) throw new Exception("Task is not exist.");
+
+            Member member = _memberRepository.FindByUserIdAndGroupId(userId, task.GroupId);
+            if (member == null)
+                throw new Exception("Updater not belong to group or 1 between member or group is not exist.");
+
+            AssignedTask assignedTask = _assignedTaskRepository.FindByTaskIdAndAssignedForId(taskStatus.Id, member.Id);
+
+            if (assignedTask == null)
+                throw new Exception("This member is not assigned for this task.");
+
+            _taskRepository.UpdateTaskStatus(taskStatus, userId);
+            return _taskRepository.FindRecordById(task.Id);
+        }
     }
 }
