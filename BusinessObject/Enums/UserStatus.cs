@@ -8,6 +8,6 @@ namespace BusinessObject.Enums
 {
     public enum UserStatus
     {
-        ACTIVE, INACTIVE,UNVERIFIED
+        ACTIVE, INACTIVE, UNVERIFIED
     }
 }

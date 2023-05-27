@@ -11,11 +11,11 @@ namespace DataAccess.Repositories
     public interface ITaskRepository
     {
         BusinessObject.Models.Task CreateTask(TaskDTOForCreating task, Guid createdById);
-        CommonResponse FilterTasks(Guid userId, string name, int? pageSize, int? page);
+        CommonResponse FilterToDoTasks(Guid userId, string? name, int? pageSize, int? page, string? orderBy, string? value);
+        CommonResponse FilterGroupTasks(Guid userId, Guid groupId, string? name, int? pageSize, int? page, string? orderBy, string? value);
         BusinessObject.Models.Task FindByName(string name);
-        TaskRecordDTO FindRecordById(Guid newTaskId);
         BusinessObject.Models.Task FindById(Guid id);
-        BusinessObject.Models.Task FindByIdAndUserId(Guid id, Guid userId);
+        TaskDetailDTO FindByIdAndUserId(Guid id, Guid userId);
         int UpdateTask(TaskDTOForUpdating taskDTO, Guid userId);
         List<BusinessObject.Models.Task> FindByMainTaskId(Guid taskId);
         int DeleteByTaskId(Guid taskId);

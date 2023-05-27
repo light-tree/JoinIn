@@ -10,27 +10,23 @@ using System.Threading.Tasks;
 
 namespace BusinessObject.DTOs
 {
-    public class TaskRecordDTO
+    public class ToDoTaskRecordDTO
     {
-        [Key]
         public Guid Id { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
-        [Required]
+        public string StartDateDeadline { get; set; }
+
         public string EndDateDeadline { get; set; }
 
-        [Required]
         public string ImpotantLevel { get; set; }
 
-        [Required]
-        public string EstimatedDays { get; set; }
+        public int EstimatedDays { get; set; }
 
-        [Required]
         public string Status { get; set; }
 
-        public UserDTOForTaskList CreatedBy { get; set; }
+        public GroupDTOForToDoTaskRecord Group { get; set; }
 
         public List<UserDTOForTaskList> AssignedFor { get; set; }
     }

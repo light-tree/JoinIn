@@ -19,7 +19,5 @@ namespace BusinessObject.DTOs
         public string FullName { get; set; }
 
         public string? Avatar { get; set; }
-
-        public List<string>? Majors { get; set; }
     }
 }

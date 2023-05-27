@@ -66,7 +66,7 @@ namespace DataAccess.Services.Implements
                 {
                     if (appliedMajor.MajorId == groupMajor.MajorId)
                     {
-                        if (!(groupMajor.MemberCount > 0 && groupMajor.Status == GroupMajorStatus.OPEN))
+                        if (!(groupMajor.MemberCount > 0))
                             throw new Exception("This group no longer need member has major with Id: " + appliedMajor.MajorId);
                         IsMatch = true;
                         _groupMajorRepository.DecreaseCurrentNeededMemberCount(groupMajor, 1);
@@ -102,7 +102,7 @@ namespace DataAccess.Services.Implements
                     {
                         if(!userMajors.Select(um => um.MajorId).Contains(majorAppliedId))
                             throw new Exception("Your application's major with Id: " + majorAppliedId + " does not match with your major.");
-                        if (!(groupMajor.MemberCount > 0 && groupMajor.Status == GroupMajorStatus.OPEN))
+                        if (!(groupMajor.MemberCount > 0))
                             throw new Exception("This group no longer need member has major with Id: " + majorAppliedId);
                         IsMatch = true;
                         break;

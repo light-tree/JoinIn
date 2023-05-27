@@ -22,9 +22,6 @@ namespace BusinessObject.Models
         [Required]
         public int MemberCount { get; set; }
 
-        [Required]
-        public GroupMajorStatus Status { get; set; }
-
         public Group Group { get; set; }
 
         public Major Major { get; set; }

@@ -28,7 +28,7 @@ namespace DataAccess.Services.Implements
             _commentRepository = commentRepository;
         }
 
-        public TaskRecordDTO CreateTask(TaskDTOForCreating task, Guid createdById)
+        public Guid CreateTask(TaskDTOForCreating task, Guid createdById)
         {
             if (task.AssignedForIds != null) 
                 if (task.AssignedForIds.GroupBy(x => x).Any(g => g.Count() > 1))
@@ -40,13 +40,18 @@ namespace DataAccess.Services.Implements
                 throw new Exception("Creater not belong to group or 1 between member or group is not exist.");
             if (_taskRepository.FindByName(task.Name) != null) 
                 throw new Exception("Duplicated task's name.");
-            if(task.MainTaskId != null)
+
+            //Created task is a sub-task
+            List<Guid> addedAssignedMemberIdsForMainTask = new List<Guid>();
+            if (task.MainTaskId != null)
             {
                 BusinessObject.Models.Task mainTask = _taskRepository.FindById(task.MainTaskId.Value);
                 if (mainTask == null)
                     throw new Exception("Main task does not exist.");
                 else if (mainTask.MainTaskId != null)
                     throw new Exception("Main task is already a subtask.");
+                List<Guid> currentAssignedMemberIdsForMainTask = _assignedTaskRepository.FindByTaskId(task.MainTaskId.Value).Select(at => at.AssignedForId).ToList();
+                addedAssignedMemberIdsForMainTask = task.AssignedForIds == null ? new List<Guid>() : task.AssignedForIds.Except(currentAssignedMemberIdsForMainTask).ToList();
             }
             Guid newTaskId = _taskRepository.CreateTask(task, createdById).Id;
 
@@ -57,35 +62,32 @@ namespace DataAccess.Services.Implements
                     throw new Exception("Member with Id: " + assignedFor + " not belong to group or 1 between member or group is not exist.");
                 assignedForIds.Add(assignedFor);
             }
-            _assignedTaskRepository.CreateAssignedTasks(assignedForIds, newTaskId, _memberRepository.FindByUserIdAndGroupId(createdById, task.GroupId).Id);
 
-            return _taskRepository.FindRecordById(newTaskId);
+            Member assignedBy = _memberRepository.FindByUserIdAndGroupId(createdById, task.GroupId);
+            if (task.MainTaskId != null)
+            {
+                _assignedTaskRepository.CreateAssignedTasks(addedAssignedMemberIdsForMainTask, task.MainTaskId.Value, assignedBy.Id);
+            }
+
+            _assignedTaskRepository.CreateAssignedTasks(assignedForIds, newTaskId, assignedBy.Id);
+
+            return newTaskId;
         }
 
-        public CommonResponse FilterTasks(Guid userId, string name, int? pageSize, int? page)
+        public CommonResponse FilterTasks(Guid userId, Guid? groupId, string? name, int? pageSize, int? page, string? orderBy, string? value)
         {
-            return _taskRepository.FilterTasks(userId, name, pageSize, page);
+            if(groupId == null)
+                return _taskRepository.FilterToDoTasks(userId, name, pageSize, page, orderBy, value);
+            else
+                return _taskRepository.FilterGroupTasks(userId, groupId.Value, name, pageSize, page, orderBy, value);
         }
 
         public TaskDetailDTO GetDetailById(Guid id, Guid userId)
         {
-            BusinessObject.Models.Task task = _taskRepository.FindByIdAndUserId(id, userId);
-            if (task == null) throw new Exception("Task is not exist.");
-            return new TaskDetailDTO()
-            {
-                Id = task.Id,
-                Name = task.Name,
-                StartDateDeadline = task.StartDateDeadline.ToString("MMMM d, yyyy | hh:mm tt"),
-                EndDateDeadline = task.EndDateDeadline.ToString("MMMM d, yyyy | hh:mm tt"),
-                FinishedDate = task.FinishedDate == null ? "-" : task.FinishedDate.Value.ToString("MMMM d, yyyy | hh:mm tt"),
-                ImpotantLevel = task.ImpotantLevel.ToString(),
-                EstimatedDays = task.EstimatedDays.ToString(),
-                Status = task.Status.ToString(),
-                Description = task.Description
-            };
+            return _taskRepository.FindByIdAndUserId(id, userId);
         }
 
-        public TaskRecordDTO UpdateTask(TaskDTOForUpdating taskDTO, Guid userId)
+        public Guid UpdateTask(TaskDTOForUpdating taskDTO, Guid userId)
         {
             if (taskDTO.AssignedForIds != null)
                 if (taskDTO.AssignedForIds.GroupBy(x => x).Any(g => g.Count() > 1))
@@ -111,14 +113,24 @@ namespace DataAccess.Services.Implements
             List<Guid> currentAssignedForIds = _assignedTaskRepository.FindByTaskId(task.Id).Select(a => a.AssignedForId).ToList();
             List<Guid> newAssignedForIds = taskDTO.AssignedForIds == null ? new List<Guid>() : taskDTO.AssignedForIds;
             List<Guid> lostAssignedForIds = currentAssignedForIds.Except(newAssignedForIds).ToList();
-            foreach(Guid id in lostAssignedForIds)
+
+            Member assignedBy = _memberRepository.FindByUserIdAndGroupId(userId, task.GroupId);
+            //Updated task is a sub-task
+            if (task.MainTaskId != null)
+            {
+                List<Guid> currentAssignedMemberIdsForMainTask = _assignedTaskRepository.FindByTaskId(task.MainTaskId.Value).Select(at => at.AssignedForId).ToList();
+                List<Guid> addAssignedMemberIdsForMainTask = newAssignedForIds.Except(currentAssignedMemberIdsForMainTask).ToList();
+                _assignedTaskRepository.CreateAssignedTasks(addAssignedMemberIdsForMainTask, task.MainTaskId.Value, assignedBy.Id);
+            }
+            
+            foreach (Guid id in lostAssignedForIds)
             {
                 _assignedTaskRepository.DeleteByAssignedForId(id);
             }
             List<Guid> addedAssignedForIds = newAssignedForIds.Except(currentAssignedForIds).ToList();
-            _assignedTaskRepository.CreateAssignedTasks(addedAssignedForIds, task.Id, _memberRepository.FindByUserIdAndGroupId(userId, task.GroupId).Id);
+            _assignedTaskRepository.CreateAssignedTasks(addedAssignedForIds, task.Id, assignedBy.Id);
 
-            return _taskRepository.FindRecordById(task.Id);
+            return task.Id;
         }
 
         public int DeleteTask(Guid taskId, Guid userId)
@@ -145,7 +157,7 @@ namespace DataAccess.Services.Implements
             return _taskRepository.DeleteByTaskId(taskId);
         }
 
-        public TaskRecordDTO UpdateTaskStatus(TaskDTOForUpdatingStatus taskStatus, Guid userId)
+        public Guid UpdateTaskStatus(TaskDTOForUpdatingStatus taskStatus, Guid userId)
         {
             BusinessObject.Models.Task task = _taskRepository.FindById(taskStatus.Id);
             if (task == null) throw new Exception("Task is not exist.");
@@ -160,7 +172,7 @@ namespace DataAccess.Services.Implements
                 throw new Exception("This member is not assigned for this task.");
 
             _taskRepository.UpdateTaskStatus(taskStatus, userId);
-            return _taskRepository.FindRecordById(task.Id);
+            return task.Id;
         }
     }
 }

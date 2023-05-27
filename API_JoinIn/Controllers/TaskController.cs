@@ -26,7 +26,7 @@ namespace API_JoinIn.Controllers
         }
 
         [HttpGet]
-        public IActionResult FilterTasks(string? name, int? pageSize, int? page)
+        public IActionResult FilterTasks(Guid? groupId, string? name, int? pageSize, int? page, string? orderBy, string? value)
         {
             Guid userId = Guid.Empty;
             var jwtToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -44,7 +44,7 @@ namespace API_JoinIn.Controllers
             CommonResponse response = new CommonResponse();
             try
             {
-                CommonResponse commonResponse = _taskService.FilterTasks(userId, name, pageSize, page);
+                CommonResponse commonResponse = _taskService.FilterTasks(userId, groupId, name, pageSize, page, orderBy, value);
                 return new OkObjectResult(commonResponse);
             }
             catch (Exception ex)
@@ -109,16 +109,12 @@ namespace API_JoinIn.Controllers
                         }
                         else throw new Exception("Internal server error");
                     }
-                    TaskRecordDTO taskRecordDTO = _taskService.CreateTask(task, createdById);
-                    if (taskRecordDTO != null)
-                    {
-                        response.Status = StatusCodes.Status200OK; ;
-                        response.Message = "Create task success.";
-                        response.Data = taskRecordDTO;
-                        scope.Complete();
-                        return new OkObjectResult(response);
-                    }
-                    else throw new Exception("Create task not success");
+
+                    response.Data = _taskService.CreateTask(task, createdById);
+                    response.Status = StatusCodes.Status200OK; ;
+                    response.Message = "Create task success.";
+                    scope.Complete();
+                    return new OkObjectResult(response);
                 }
             }
             catch (Exception ex)
@@ -151,16 +147,12 @@ namespace API_JoinIn.Controllers
                         }
                         else throw new Exception("Internal server error");
                     }
-                    TaskRecordDTO taskRecordDTO = _taskService.UpdateTask(task, userId);
-                    if (taskRecordDTO != null)
-                    {
-                        response.Status = StatusCodes.Status200OK;
-                        response.Message = "Update task success.";
-                        response.Data = taskRecordDTO;
-                        scope.Complete();
-                        return new OkObjectResult(response);
-                    }
-                    else throw new Exception("Update task not success");
+
+                    response.Data = _taskService.UpdateTask(task, userId);
+                    response.Status = StatusCodes.Status200OK;
+                    response.Message = "Update task success.";
+                    scope.Complete();
+                    return new OkObjectResult(response);
                 }
             }
             catch (Exception ex)
@@ -193,16 +185,12 @@ namespace API_JoinIn.Controllers
                         }
                         else throw new Exception("Internal server error");
                     }
-                    TaskRecordDTO taskRecordDTO = _taskService.UpdateTaskStatus(task, userId);
-                    if (taskRecordDTO != null)
-                    {
-                        response.Status = StatusCodes.Status200OK;
-                        response.Message = "Update task success.";
-                        response.Data = taskRecordDTO;
-                        scope.Complete();
-                        return new OkObjectResult(response);
-                    }
-                    else throw new Exception("Update task not success");
+
+                    response.Data = _taskService.UpdateTaskStatus(task, userId);
+                    response.Status = StatusCodes.Status200OK;
+                    response.Message = "Update task success.";
+                    scope.Complete();
+                    return new OkObjectResult(response);
                 }
             }
             catch (Exception ex)

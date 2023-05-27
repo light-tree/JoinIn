@@ -29,6 +29,10 @@ namespace DataAccess.Services.Implements
 
         public Guid CreateGroup(Guid createrId, GroupDTOForCreating groupDTOForCreating)
         {
+            int totalMemberNeeded = groupDTOForCreating.GroupMajorDTOs.Select(gm => gm.MemberCount).Sum();
+            if (totalMemberNeeded > groupDTOForCreating.GroupSize - 1)
+                throw new Exception("Total member needed must smaller than the team's size since it also count the creater.");
+
             Group group = _groupRepository.CreateGroup(groupDTOForCreating);
 
             _memberRepository.CreateMember(createrId, group.Id, MemberRole.LEADER);

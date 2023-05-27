@@ -24,8 +24,7 @@ namespace DataAccess.Repositories.Implements
             {
                 MajorId = groupMajorDTO.MajorId,
                 GroupId = groudId,
-                MemberCount = groupMajorDTO.MemberCount,
-                Status = groupMajorDTO.Status,
+                MemberCount = groupMajorDTO.MemberCount
             };
 
             _context.GroupMajors.Add(groupMajor);

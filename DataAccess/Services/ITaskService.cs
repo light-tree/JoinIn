@@ -9,11 +9,11 @@ namespace DataAccess.Services
 {
     public interface ITaskService
     {
-        TaskRecordDTO CreateTask(TaskDTOForCreating task, Guid createdById);
+        Guid CreateTask(TaskDTOForCreating task, Guid createdById);
         int DeleteTask(Guid taskId, Guid userId);
-        CommonResponse FilterTasks(Guid userId, string name, int? pageSize, int? page);
+        CommonResponse FilterTasks(Guid userId, Guid? groupId, string? name, int? pageSize, int? page, string? orderBy, string? value);
         TaskDetailDTO GetDetailById(Guid id, Guid userId);
-        TaskRecordDTO UpdateTask(TaskDTOForUpdating task, Guid userId);
-        TaskRecordDTO UpdateTaskStatus(TaskDTOForUpdatingStatus task, Guid userId);
+        Guid UpdateTask(TaskDTOForUpdating task, Guid userId);
+        Guid UpdateTaskStatus(TaskDTOForUpdatingStatus task, Guid userId);
     }
 }
