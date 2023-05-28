@@ -1,3 +1,4 @@
+﻿using API_JoinIn.Utils.BackgroundService.ScheduleTasks;
 using API_JoinIn.Utils.Email;
 using API_JoinIn.Utils.Email.Impl;
 using API_JoinIn.Utils.Security;
@@ -62,7 +63,7 @@ builder.Services.AddScoped<IUserMajorService, UserMajorService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+builder.Services.AddSingleton<IHostedService, AutoSendEmail>();
 
 
 builder.Services.AddCors(o =>
@@ -145,6 +146,10 @@ builder.Services.AddMemoryCache();
 
 
 builder.Services.AddAuthorization();
+
+
+// Thêm các công việc đã được đăng ký vào Hangfire
+
 
 
 

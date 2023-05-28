@@ -15,6 +15,13 @@ using BusinessObject.DTOs.Common;
 using Newtonsoft.Json.Linq;
 using BusinessObject.Enums;
 using System.Data;
+using Microsoft.Extensions.Hosting.Internal;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO;
+using Google.Cloud.Storage.V1;
+using System.Text;
+using Google.Apis.Auth.OAuth2;
+using Firebase.Storage;
 
 namespace API_JoinIn.Controllers
 {
@@ -28,9 +35,10 @@ namespace API_JoinIn.Controllers
         private readonly IEmailService emailService;
         private readonly IJwtService jwtService;
         private readonly IUserMajorService userMajorService;
+        private readonly StorageClient storageClient;
 
 
-        public UserController(IConfiguration configuration, IUserService userService, IMajorService majorService, IEmailService emailService, IJwtService jwtService, IUserMajorService userMajorService)
+        public UserController(IConfiguration configuration, IUserService userService, IMajorService majorService, IEmailService emailService, IJwtService jwtService, IUserMajorService userMajorService, StorageClient storageClient)
         {
             _configuration = configuration;
             this.userService = userService;
@@ -38,6 +46,7 @@ namespace API_JoinIn.Controllers
             this.emailService = emailService;
             this.jwtService = jwtService;
             this.userMajorService = userMajorService;
+            this.storageClient = storageClient;
         }
 
 
@@ -116,14 +125,6 @@ namespace API_JoinIn.Controllers
                 //    .SetBasePath(Directory.GetCurrentDirectory())
                 //    .AddJsonFile("appsettings.json")
                 //    .Build();
-
-                //var smtpHost = configuration["SmtpConfig:Host"];
-                //var smtpPort = int.Parse(configuration["SmtpConfig:Port"]);
-                //var smtpUsername = configuration["SmtpConfig:Username"];
-                //var smtpPassword = configuration["SmtpConfig:Password"];
-
-                //var emailService = new EmailService(smtpHost, smtpPort, smtpUsername, smtpPassword);
-                //  await emailService.SendConfirmationEmail(email, );
                 string baseUrlVerify = _configuration["BaseVerifyLink"];
                 CommonResponse commonResponse = new CommonResponse();
 
@@ -169,8 +170,19 @@ namespace API_JoinIn.Controllers
         public async Task<IActionResult> IsEmailVerified(string token )
         {
             CommonResponse commonResponse = new CommonResponse();
+            User user;
+
+           
+                user = await userService.FindUserByToken(token);
             
-            User user = await userService.FindUserByToken(token);
+            if(user == null)
+            {
+                commonResponse.Message = "Unauthorize";
+                commonResponse.Status = StatusCodes.Status401Unauthorized;
+                return Unauthorized(commonResponse);
+            }
+
+
             if (user.Token == token)
             {
                 string role = "";
@@ -294,6 +306,8 @@ namespace API_JoinIn.Controllers
                     user.Theme = userRequestDTO.Theme;
                     user.Status = UserStatus.ACTIVE;
                     user.IsAdmin = false;
+                  
+
                     // check danh sách major
                     foreach (Guid id in userRequestDTO.MajorIdList)
                     {
@@ -346,18 +360,7 @@ namespace API_JoinIn.Controllers
             {
                 // Gửi email chứa link xác nhận đến địa chỉ email đã được chỉ định
                 // (thực hiện bằng cách sử dụng thư viện gửi email của bạn)
-                //var configuration = new ConfigurationBuilder()
-                //    .SetBasePath(Directory.GetCurrentDirectory())
-                //    .AddJsonFile("appsettings.json")
-                //    .Build();
-
-                //var smtpHost = configuration["SmtpConfig:Host"];
-                //var smtpPort = int.Parse(configuration["SmtpConfig:Port"]);
-                //var smtpUsername = configuration["SmtpConfig:Username"];
-                //var smtpPassword = configuration["SmtpConfig:Password"];
-
-                //var emailService = new EmailService(smtpHost, smtpPort, smtpUsername, smtpPassword);
-                //  await emailService.SendConfirmationEmail(email, );
+               
                 string baseUrlVerify = _configuration["BaseVerifyLink"];
             
 
@@ -448,5 +451,35 @@ namespace API_JoinIn.Controllers
          }
 
 
+        [HttpPost("upload")]
+       
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file selected.");
+           
+
+
+            // Read the uploaded file into a memory stream
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+
+                // Authenticate with Firebase using a service account key
+               
+                // Define the bucket and object names
+                var bucketName = "gs://joinin-387312.appspot.com";
+                var objectName = "uploads/" + file.FileName;
+
+                // Upload the file to Firebase Storage
+                storageClient.UploadObject(bucketName, objectName, null, memoryStream);
+            }
+
+            return Ok();
         }
+
+
+    }
+
+ 
 }
